@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexOS — Single Shell Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Syne:wght@400;600;700&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06080d;
+    --surface: #0b0f18;
+    --surface2: #10161f;
+    --surface3: #161e2a;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #f59e0b;
+    --green: #10b981;
+    --red: #ef4444;
+    --orange: #f97316;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --border: rgba(0, 212, 255, 0.12);
+    --border-strong: rgba(0, 212, 255, 0.28);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: 0.4;
+  }
+
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 60px 20px;
+    position: relative;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% -10%, rgba(0,212,255,0.12) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 40% at 90% 90%, rgba(124,58,237,0.1) 0%, transparent 60%);
+  }
+
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.035) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 90% 70% at 50% 50%, black 20%, transparent 100%);
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 5px;
+    color: var(--accent); text-transform: uppercase;
+    border: 1px solid rgba(0,212,255,0.2);
+    background: rgba(0,212,255,0.06);
+    padding: 6px 20px; border-radius: 2px;
+    margin-bottom: 28px;
+    animation: up 0.7s ease both;
+  }
+
+  h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(60px, 11vw, 110px);
+    font-weight: 900; line-height: 0.92; letter-spacing: -3px;
+    background: linear-gradient(150deg, #ffffff 0%, #00d4ff 45%, #7c3aed 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: up 0.7s 0.08s ease both;
+  }
+
+  .hero-tagline {
+    font-size: 16px; color: var(--muted);
+    margin-top: 18px; letter-spacing: 1.5px;
+    animation: up 0.7s 0.16s ease both;
+  }
+
+  .hero-principle {
+    margin-top: 36px;
+    background: rgba(239,68,68,0.07);
+    border: 1px solid rgba(239,68,68,0.25);
+    border-radius: 4px;
+    padding: 14px 28px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: #fca5a5;
+    letter-spacing: 0.5px;
+    max-width: 680px;
+    line-height: 1.6;
+    animation: up 0.7s 0.24s ease both;
+  }
+  .hero-principle strong { color: #ef4444; font-weight: 700; }
+
+  .hero-tags {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    justify-content: center; margin-top: 28px;
+    animation: up 0.7s 0.32s ease both;
+  }
+
+  .tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    padding: 4px 12px; border-radius: 2px;
+    border: 1px solid var(--border); color: var(--accent);
+    background: rgba(0,212,255,0.05); letter-spacing: 1px;
+  }
+  .tag.red { border-color: rgba(239,68,68,0.25); color: #fca5a5; background: rgba(239,68,68,0.05); }
+  .tag.purple { border-color: rgba(124,58,237,0.25); color: #c4b5fd; background: rgba(124,58,237,0.05); }
+
+  .scroll-bar {
+    position: absolute; bottom: 30px;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 5px; color: var(--muted); font-size: 10px;
+    letter-spacing: 3px; font-family: 'JetBrains Mono', monospace;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+  .scroll-bar::after {
+    content: ''; width: 1px; height: 36px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+
+  @keyframes up { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:none; } }
+  @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:0.9} }
+
+  hr.div { border:none; height:1px; background:linear-gradient(to right,transparent,var(--border),transparent); margin:0 24px; }
+
+  section { padding: 76px 20px; max-width: 1200px; margin: 0 auto; }
+
+  .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 4px; color: var(--accent);
+    text-transform: uppercase; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .label::before { content:''; display:inline-block; width:28px; height:1px; background:var(--accent); }
+
+  h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(24px, 3.5vw, 40px);
+    font-weight: 700; margin-bottom: 44px; color: #fff;
+  }
+  h2 span { color: var(--accent); }
+  h2 .red { color: var(--red); }
+
+  /* ─── STRIPPED ─── */
+  .stripped-intro {
+    background: linear-gradient(135deg, rgba(239,68,68,0.06) 0%, rgba(239,68,68,0.02) 100%);
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 4px;
+    padding: 28px 32px;
+    margin-bottom: 36px;
+    display: flex; gap: 20px; align-items: flex-start;
+  }
+  .si-big { font-size: 32px; flex-shrink: 0; }
+  .si-title { font-family: 'Orbitron', monospace; font-size: 16px; font-weight: 700; color: #fca5a5; margin-bottom: 8px; }
+  .si-body { font-size: 14px; color: #94a3b8; line-height: 1.7; }
+
+  .stripped-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width:640px) { .stripped-grid { grid-template-columns: 1fr; } }
+
+  .stripped-col { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+
+  .scol-head {
+    padding: 12px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .scol-rm { background: rgba(239,68,68,0.07); border-bottom: 1px solid rgba(239,68,68,0.15); color: #fca5a5; }
+  .scol-kp { background: rgba(16,185,129,0.07); border-bottom: 1px solid rgba(16,185,129,0.15); color: #6ee7b7; }
+
+  .sitem {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 18px; font-size: 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.035);
+  }
+  .sitem:last-child { border-bottom: none; }
+  .sitem-ico { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .sitem-name { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #e2e8f0; }
+  .sitem-note { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* ─── SHELL MOCKUP ─── */
+  .shell-diagram { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 32px; }
+
+  .shell-screen {
+    background: #060a10; height: 400px;
+    position: relative; display: flex; flex-direction: column; overflow: hidden;
+  }
+  .shell-screen::before {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+  .shell-screen::after {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 30% 40%, rgba(124,58,237,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 30% at 70% 60%, rgba(0,212,255,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .voice-hud {
+    position: absolute; top: 24px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 10;
+  }
+  .voice-ring {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: rgba(0,212,255,0.08); border: 2px solid rgba(0,212,255,0.35);
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+    box-shadow: 0 0 24px rgba(0,212,255,0.15); animation: breathe 3s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%,100%{box-shadow:0 0 20px rgba(0,212,255,0.15)}
+    50%{box-shadow:0 0 40px rgba(0,212,255,0.3)}
+  }
+  .voice-text {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent);
+    letter-spacing: 1.5px; background: rgba(0,0,0,0.5); padding: 4px 12px;
+    border-radius: 2px; border: 1px solid rgba(0,212,255,0.15); white-space: nowrap;
+  }
+  .voice-wave { display: flex; gap: 2px; align-items: center; height: 16px; }
+  .wv { width: 3px; background: rgba(0,212,255,0.5); border-radius: 2px; animation: wave 1.2s ease-in-out infinite; }
+  .wv:nth-child(1){height:5px;animation-delay:0s}
+  .wv:nth-child(2){height:10px;animation-delay:0.1s}
+  .wv:nth-child(3){height:14px;animation-delay:0.2s}
+  .wv:nth-child(4){height:16px;animation-delay:0.15s}
+  .wv:nth-child(5){height:10px;animation-delay:0.05s}
+  .wv:nth-child(6){height:6px;animation-delay:0.25s}
+  @keyframes wave { 0%,100%{transform:scaleY(0.4);opacity:0.5} 50%{transform:scaleY(1);opacity:1} }
+
+  .nobar-hint {
+    position: absolute; top: 8px; right: 12px;
+    font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    color: rgba(239,68,68,0.5); letter-spacing: 1px;
+    border: 1px solid rgba(239,68,68,0.15); padding: 3px 8px; border-radius: 2px;
+    background: rgba(239,68,68,0.04);
+  }
+
+  .app-win {
+    position: absolute;
+    background: rgba(13,17,23,0.9); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px; backdrop-filter: blur(20px); overflow: hidden; z-index: 5;
+  }
+  .aw-bar {
+    padding: 7px 12px; background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; gap: 5px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted);
+  }
+  .aw-d { width: 8px; height: 8px; border-radius: 50%; }
+  .aw-body { padding: 10px 14px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #4a5568; line-height: 1.7; }
+
+  .win1 { top: 100px; left: 55px; width: 190px; }
+  .win2 { top: 85px; right: 65px; width: 210px; }
+
+  .shell-dock-wrap { position: absolute; bottom: 0; left: 0; right: 0; display: flex; justify-content: center; z-index: 20; }
+  .shell-dock {
+    background: rgba(8,12,20,0.82); backdrop-filter: blur(28px);
+    border: 1px solid rgba(255,255,255,0.07); border-bottom: none;
+    border-radius: 14px 14px 0 0; padding: 9px 18px;
+    display: flex; gap: 8px; align-items: center;
+  }
+  .da { width: 44px; height: 44px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 20px; position: relative; transition: transform 0.2s; cursor: pointer; }
+  .da:hover { transform: translateY(-5px) scale(1.08); }
+  .da::after { content:''; position:absolute; bottom:-5px; left:50%; transform:translateX(-50%); width:4px; height:4px; border-radius:50%; background:var(--accent); box-shadow:0 0 5px var(--accent); }
+  .da-s { background: linear-gradient(135deg,#1b2838,#2a475e); }
+  .da-t { background: linear-gradient(135deg,#0a1a0a,#0d3a0d); }
+  .da-b { background: linear-gradient(135deg,#1a2e4a,#1e5f9a); }
+  .da-g { background: linear-gradient(135deg,#1f1a2e,#3d2b6b); }
+  .dsep { width:1px; height:28px; background:rgba(255,255,255,0.08); margin:0 2px; }
+
+  .shell-specs { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; padding: 20px; background: var(--surface2); }
+  .ss-card { background: var(--surface3); border: 1px solid var(--border); border-left: 2px solid transparent; border-radius: 4px; padding: 14px 16px; transition: border-left-color 0.3s; }
+  .ss-card:hover { border-left-color: var(--accent); }
+  .ss-lbl { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 3px; color: var(--accent); text-transform: uppercase; margin-bottom: 5px; }
+  .ss-val { font-size: 13px; color: #cbd5e1; line-height: 1.5; }
+
+  /* ─── ARCH ─── */
+  .arch-wrap { display: flex; flex-direction: column; gap: 0; }
+  .arch-row { display: grid; grid-template-columns: 110px 1fr; gap: 0; position: relative; }
+  .arch-lbl { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 18px 8px; position: relative; }
+  .arch-lbl::after { content:''; position:absolute; top:0; bottom:0; right:0; width:1px; background:linear-gradient(to bottom,transparent,var(--border),transparent); }
+  .al-n { font-family:'Orbitron',monospace; font-size:22px; font-weight:900; opacity:0.25; }
+  .al-t { font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:2px; color:var(--muted); text-align:center; text-transform:uppercase; }
+  .arch-body { padding: 20px 28px; border-left: 2px solid var(--border); margin-left: -1px; transition: border-color 0.3s; }
+  .arch-row:hover .arch-body { border-left-color: var(--accent); }
+  .ab-t { font-family:'Orbitron',monospace; font-size:14px; font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:8px; color:#fff; }
+  .ab-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+  .ab-d { font-size:13px; color:#94a3b8; line-height:1.65; margin-bottom:10px; }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .chip { font-family:'JetBrains Mono',monospace; font-size:11px; padding:2px 9px; border-radius:2px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09); color:#94a3b8; }
+  .c-b{border-color:rgba(0,212,255,0.25);color:var(--accent);background:rgba(0,212,255,0.06)}
+  .c-p{border-color:rgba(124,58,237,0.25);color:#c4b5fd;background:rgba(124,58,237,0.06)}
+  .c-g{border-color:rgba(16,185,129,0.25);color:var(--green);background:rgba(16,185,129,0.06)}
+  .c-a{border-color:rgba(245,158,11,0.25);color:var(--accent3);background:rgba(245,158,11,0.06)}
+  .c-r{border-color:rgba(239,68,68,0.25);color:#fca5a5;background:rgba(239,68,68,0.06)}
+  .c-o{border-color:rgba(249,115,22,0.25);color:var(--orange);background:rgba(249,115,22,0.06)}
+  .arch-arr { grid-column:1/-1; text-align:center; padding:4px 0; color:rgba(0,212,255,0.2); font-size:14px; display:flex; align-items:center; justify-content:center; gap:14px; }
+  .arch-arr::before,.arch-arr::after{content:'';flex:1;height:1px;background:linear-gradient(to right,transparent,rgba(0,212,255,0.1))}
+  .arch-arr::after{background:linear-gradient(to left,transparent,rgba(0,212,255,0.1))}
+  .arch-row[data-l="1"] .ab-dot{background:#f59e0b;box-shadow:0 0 7px #f59e0b}.arch-row[data-l="1"] .al-n{color:#f59e0b}
+  .arch-row[data-l="2"] .ab-dot{background:#ef4444;box-shadow:0 0 7px #ef4444}.arch-row[data-l="2"] .al-n{color:#ef4444}
+  .arch-row[data-l="3"] .ab-dot{background:#10b981;box-shadow:0 0 7px #10b981}.arch-row[data-l="3"] .al-n{color:#10b981}
+  .arch-row[data-l="4"] .ab-dot{background:#a78bfa;box-shadow:0 0 7px #a78bfa}.arch-row[data-l="4"] .al-n{color:#a78bfa}
+  .arch-row[data-l="5"] .ab-dot{background:#00d4ff;box-shadow:0 0 7px #00d4ff}.arch-row[data-l="5"] .al-n{color:#00d4ff}
+  .arch-row[data-l="6"] .ab-dot{background:#f97316;box-shadow:0 0 7px #f97316}.arch-row[data-l="6"] .al-n{color:#f97316}
+
+  /* ─── VOICE FLOW ─── */
+  .vf { display:flex; gap:0; background:var(--surface); border:1px solid var(--border); border-radius:4px; overflow:hidden; flex-wrap:wrap; }
+  .vf-s { flex:1; min-width:140px; padding:22px 18px; border-right:1px solid var(--border); position:relative; transition:background 0.3s; }
+  .vf-s:last-child{border-right:none}
+  .vf-s:hover{background:rgba(0,212,255,0.03)}
+  .vf-s::after{content:'→';position:absolute;right:-10px;top:50%;transform:translateY(-50%);color:rgba(0,212,255,0.3);font-size:16px;z-index:2}
+  .vf-s:last-child::after{display:none}
+  .vfs-n{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--accent);margin-bottom:8px}
+  .vfs-t{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:#fff;margin-bottom:6px}
+  .vfs-d{font-size:12px;color:var(--muted);line-height:1.5}
+
+  /* ─── VOICE COMMANDS ─── */
+  .vc-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:18px; }
+  .vc-card { background:var(--surface); border:1px solid var(--border); border-radius:4px; padding:22px; position:relative; overflow:hidden; transition:border-color 0.3s,transform 0.2s; }
+  .vc-card:hover{border-color:var(--border-strong);transform:translateY(-2px)}
+  .vc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:opacity 0.3s}
+  .vc-card:hover::before{opacity:1}
+  .vc-cat{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+  .vc-row{display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+  .vc-row:last-child{border-bottom:none}
+  .vc-led{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 5px var(--green);margin-top:6px;flex-shrink:0}
+  .vc-q{font-family:'JetBrains Mono',monospace;font-size:12px;color:#cbd5e1;line-height:1.5}
+  .vc-a{font-size:11px;color:var(--muted);margin-top:1px;font-style:italic}
+
+  /* ─── APP TABLE ─── */
+  .app-table{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:24px}
+  .app-table th{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);padding:11px 16px;text-align:left;background:rgba(0,212,255,0.04);border-bottom:1px solid var(--border)}
+  .app-table td{padding:10px 16px;color:#94a3b8;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:top}
+  .app-table tr:last-child td{border-bottom:none}
+  .app-table tr:hover td{background:rgba(0,212,255,0.02);color:#cbd5e1}
+  .mono{font-family:'JetBrains Mono',monospace;font-size:12px;color:#e2e8f0}
+  .badge{font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 8px;border-radius:2px;display:inline-block}
+  .b-n{background:rgba(0,212,255,0.08);color:var(--accent);border:1px solid rgba(0,212,255,0.18)}
+  .b-f{background:rgba(124,58,237,0.08);color:#c4b5fd;border:1px solid rgba(124,58,237,0.18)}
+  .b-g{background:rgba(16,185,129,0.08);color:var(--green);border:1px solid rgba(16,185,129,0.18)}
+  .b-p{background:rgba(249,115,22,0.08);color:var(--orange);border:1px solid rgba(249,115,22,0.18)}
+
+  /* ─── CODE ─── */
+  .cb{background:#060a10;border:1px solid var(--border);border-radius:4px;overflow:hidden;margin:20px 0;font-family:'JetBrains Mono',monospace;font-size:12.5px}
+  .cbh{background:var(--surface);padding:8px 16px;font-size:10px;color:var(--muted);letter-spacing:1px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--border)}
+  .cdd{width:9px;height:9px;border-radius:50%}
+  pre{padding:18px 16px;overflow-x:auto;line-height:1.85}
+  .co{color:#374151}.ck{color:#00d4ff}.cv{color:#10b981}.cs{color:#f59e0b}.cm{color:#a78bfa}.cn{color:#f97316}.cr{color:#fca5a5}
+
+  /* ─── HARDWARE ─── */
+  .hw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+  .hw-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:18px;transition:border-color 0.3s}
+  .hw-card:hover{border-color:var(--border-strong)}
+  .hw-title{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;color:#fff}
+  .hw-row{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12.5px;color:#94a3b8;border-bottom:1px solid rgba(255,255,255,0.03)}
+  .hw-row:last-child{border-bottom:none}
+  .hd{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+  .d-a{background:var(--green);box-shadow:0 0 4px var(--green)}
+  .d-m{background:var(--accent3);box-shadow:0 0 4px var(--accent3)}
+  .d-p{background:var(--accent2);box-shadow:0 0 4px var(--accent2)}
+
+  /* ─── PACKAGES ─── */
+  .pkg-table{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:24px}
+  .pkg-table th{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);padding:11px 16px;text-align:left;background:rgba(0,212,255,0.04);border-bottom:1px solid var(--border)}
+  .pkg-table td{padding:10px 16px;color:#94a3b8;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:top}
+  .pkg-table tr:last-child td{border-bottom:none}
+  .pkg-table tr:hover td{background:rgba(0,212,255,0.02)}
+
+  /* ─── SECURITY ─── */
+  .sec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+  .sec-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:18px}
+  .sec-h{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .sec-ico{font-size:18px}
+  .sec-t{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:#fff}
+  .sec-row{display:flex;align-items:flex-start;gap:7px;padding:5px 0;font-size:12.5px;color:#94a3b8}
+  .sc{color:var(--green);font-size:12px;flex-shrink:0;margin-top:1px}
+  .ss{color:var(--accent);font-size:12px;flex-shrink:0;margin-top:1px}
+
+  /* ─── PLUGIN ─── */
+  .pf{display:flex;gap:0;flex-wrap:wrap;background:var(--surface);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+  .pf-s{flex:1;min-width:150px;padding:22px 18px;border-right:1px solid var(--border);position:relative;transition:background 0.3s}
+  .pf-s:last-child{border-right:none}.pf-s:hover{background:rgba(0,212,255,0.03)}
+  .pf-s::after{content:'→';position:absolute;right:-10px;top:50%;transform:translateY(-50%);color:rgba(0,212,255,0.25);font-size:16px;z-index:2}
+  .pf-s:last-child::after{display:none}
+  .pfs-n{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--accent);margin-bottom:7px}
+  .pfs-t{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:#fff;margin-bottom:6px}
+  .pfs-d{font-size:12px;color:var(--muted);line-height:1.5}
+
+  footer{border-top:1px solid var(--border);padding:44px 20px;text-align:center;font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;letter-spacing:1px;background:linear-gradient(to top,rgba(0,212,255,0.02),transparent)}
+  footer strong{font-family:'Orbitron',monospace;color:var(--accent);font-size:15px}
+
+  @media(max-width:640px){
+    .arch-row{grid-template-columns:55px 1fr}.al-t{display:none}
+    .vf-s,.pf-s{min-width:100%;border-right:none;border-bottom:1px solid var(--border)}
+    .vf-s::after,.pf-s::after{content:'↓';right:50%;bottom:-10px;top:auto;transform:translateX(50%)}
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="eyebrow">Architecture Document · v2.0 · Single Shell Edition</div>
+  <h1>NexOS</h1>
+  <p class="hero-tagline">Voice-Controlled · Gaming-Native · One Interface. Nothing Else.</p>
+  <div class="hero-principle">
+    <strong>Core Design Rule:</strong> NexOS runs exactly <strong>one</strong> graphical interface — the NexOS Shell.
+    No GNOME. No KDE. No login manager. No desktop icons. No menus.
+    The OS is operated entirely through voice and natural language.
+    Apps, settings, and terminals are launched <em>into</em> this single shell on demand — then dismissed.
+  </div>
+  <div class="hero-tags">
+    <span class="tag">Pop!_OS Base</span>
+    <span class="tag">Linux 6.x RT</span>
+    <span class="tag">Hyprland Only</span>
+    <span class="tag red">GNOME — REMOVED</span>
+    <span class="tag red">KDE — REMOVED</span>
+    <span class="tag red">Display Manager — REMOVED</span>
+    <span class="tag purple">Proton + Vulkan</span>
+    <span class="tag purple">Whisper STT</span>
+  </div>
+  <div class="scroll-bar">SCROLL</div>
+</div>
+
+<!-- 01 STRIPPED -->
+<hr class="div">
+<section>
+  <div class="label">01 — Single Shell Rule</div>
+  <h2>Everything Removed. <span class="red">One Shell Remains.</span></h2>
+
+  <div class="stripped-intro">
+    <div class="si-big">🚫</div>
+    <div>
+      <div class="si-title">Zero Redundant GUI Surfaces</div>
+      <div class="si-body">Pop!_OS is used as the base for its kernel, driver tooling, and APT ecosystem — not its desktop. GNOME Shell, GDM login manager, and every other visual layer are purged during post-install. The system boots directly into the NexOS Wayland compositor via auto-login on TTY1. There is no other GUI path. All interaction is via voice or the minimal dock. Everything else is invisible unless asked for by voice.</div>
+    </div>
+  </div>
+
+  <div class="stripped-grid">
+    <div class="stripped-col">
+      <div class="scol-head scol-rm">✕ &nbsp; Purged from Base OS</div>
+      <div class="sitem"><span class="sitem-ico">🖥️</span><div><div class="sitem-name">GNOME Shell</div><div class="sitem-note">Replaced entirely by NexOS Shell (Hyprland)</div></div></div>
+      <div class="sitem"><span class="sitem-ico">🔐</span><div><div class="sitem-name">GDM3 (Display Manager)</div><div class="sitem-note">Replaced by auto-login → NexOS Shell on boot</div></div></div>
+      <div class="sitem"><span class="sitem-ico">🗂️</span><div><div class="sitem-name">Nautilus (File Manager)</div><div class="sitem-note">File access via voice or TUI (yazi in terminal)</div></div></div>
+      <div class="sitem"><span class="sitem-ico">⚙️</span><div><div class="sitem-name">GNOME Settings / Control Center</div><div class="sitem-note">Replaced by NexOS Settings plugin overlay</div></div></div>
+      <div class="sitem"><span class="sitem-ico">📋</span><div><div class="sitem-name">GNOME Taskbar / Top Bar</div><div class="sitem-note">Does not exist. No clock bar, no system tray.</div></div></div>
+      <div class="sitem"><span class="sitem-ico">🔔</span><div><div class="sitem-name">GNOME Notification Center</div><div class="sitem-note">mako daemon handles minimal toasts only</div></div></div>
+      <div class="sitem"><span class="sitem-ico">🧰</span><div><div class="sitem-name">KDE Plasma / Xfce / MATE / etc.</div><div class="sitem-note">Never installed. Blocked at package level.</div></div></div>
+      <div class="sitem"><span class="sitem-ico">🗃️</span><div><div class="sitem-name">X11 / Xorg display server</div><div class="sitem-note">Wayland-only. XWayland only if legacy app needs it.</div></div></div>
+      <div class="sitem"><span class="sitem-ico">🏠</span><div><div class="sitem-name">Desktop icons / wallpaper picker</div><div class="sitem-note">No icons. Wallpaper set via config file or voice.</div></div></div>
+    </div>
+
+    <div class="stripped-col">
+      <div class="scol-head scol-kp">✓ &nbsp; Kept from Base OS</div>
+      <div class="sitem"><span class="sitem-ico">📦</span><div><div class="sitem-name">APT Package Manager</div><div class="sitem-note">Core dependency management — headless</div></div></div>
+      <div class="sitem"><span class="sitem-ico">⚙️</span><div><div class="sitem-name">systemd</div><div class="sitem-note">Service/boot management — no GUI needed</div></div></div>
+      <div class="sitem"><span class="sitem-ico">🔧</span><div><div class="sitem-name">NVIDIA / AMD Driver Stack</div><div class="sitem-note">Kernel modules — no GUI layer required</div></div></div>
+      <div class="sitem"><span class="sitem-ico">🔊</span><div><div class="sitem-name">PipeWire / ALSA</div><div class="sitem-note">Audio subsystem — controlled via voice/wpctl</div></div></div>
+      <div class="sitem"><span class="sitem-ico">🌐</span><div><div class="sitem-name">NetworkManager</div><div class="sitem-note">Wi-Fi/BT daemon — controlled via nmcli + voice</div></div></div>
+      <div class="sitem"><span class="sitem-ico">💾</span><div><div class="sitem-name">LUKS2 / btrfs / systemd-boot</div><div class="sitem-note">Encryption, filesystem, bootloader — no GUI</div></div></div>
+      <div class="sitem"><span class="sitem-ico">🖥️</span><div><div class="sitem-name">Wayland protocol (libwayland)</div><div class="sitem-note">Only display protocol. Hyprland uses it.</div></div></div>
+      <div class="sitem"><span class="sitem-ico">🛡️</span><div><div class="sitem-name">AppArmor + ufw</div><div class="sitem-note">Security enforcement — headless daemons</div></div></div>
+      <div class="sitem"><span class="sitem-ico">📲</span><div><div class="sitem-name">Flatpak runtime</div><div class="sitem-note">Sandboxed apps launched into NexOS Shell</div></div></div>
+    </div>
+  </div>
+
+  <div class="cb">
+    <div class="cbh">
+      <span class="cdd" style="background:#ef4444"></span>
+      <span class="cdd" style="background:#f59e0b"></span>
+      <span class="cdd" style="background:#10b981"></span>
+      nexos-strip.sh — Purge all GUI layers after Pop!_OS base install
+    </div>
+    <pre><span class="co">#!/bin/bash</span>
+<span class="co"># ── Step 1: Remove GNOME desktop and display manager ──────────────────</span>
+<span class="cm">apt remove</span> --purge -y \
+    <span class="cr">gnome-shell gnome-session gdm3 gnome-control-center</span> \
+    <span class="cr">gnome-settings-daemon nautilus gnome-terminal</span> \
+    <span class="cr">gnome-software gnome-shell-extensions ubuntu-desktop</span> \
+    <span class="cr">pop-desktop pop-gnome-shell-theme</span>
+
+<span class="co"># ── Step 2: Remove Xorg (Wayland-only system) ─────────────────────────</span>
+<span class="cm">apt remove</span> --purge -y <span class="cr">xorg xserver-xorg xserver-xorg-core</span>
+<span class="co"># XWayland available if ANY legacy app requires it (opt-in only)</span>
+
+<span class="co"># ── Step 3: Mask every display manager permanently ────────────────────</span>
+<span class="cm">systemctl</span> disable --now gdm3 lightdm sddm 2>/dev/null
+<span class="cm">systemctl</span> mask gdm3 lightdm sddm
+
+<span class="co"># ── Step 4: Auto-login straight to TTY1 → NexOS Shell ────────────────</span>
+<span class="cm">mkdir</span> -p /etc/systemd/system/getty@tty1.service.d/
+<span class="cm">cat</span> > /etc/systemd/system/getty@tty1.service.d/autologin.conf <span class="cs">&lt;&lt;EOF</span>
+[Service]
+ExecStart=
+ExecStart=-/sbin/agetty --autologin nexos --noclear %I \$TERM
+<span class="cs">EOF</span>
+
+<span class="co"># ── Step 5: Start Hyprland shell on TTY1 login ────────────────────────</span>
+<span class="cm">echo</span> <span class="cs">'[[ -z $DISPLAY &amp;&amp; $XDG_VTNR -eq 1 ]] &amp;&amp; exec Hyprland'</span> >> /home/nexos/.bash_profile
+
+<span class="co"># ── Step 6: Clean up ──────────────────────────────────────────────────</span>
+<span class="cm">apt autoremove</span> --purge -y &amp;&amp; <span class="cm">apt clean</span>
+<span class="cm">echo</span> <span class="cs">"Done. NexOS Shell is the only GUI. Reboot to apply."</span></pre>
+  </div>
+</section>
+
+<!-- 02 SHELL INTERFACE -->
+<hr class="div">
+<section>
+  <div class="label">02 — The Shell</div>
+  <h2>The <span>NexOS Shell</span> — One Interface, Total Control</h2>
+
+  <div class="shell-diagram">
+    <div class="shell-screen">
+      <div class="nobar-hint">NO TOP BAR · NO TASKBAR · NO ICONS</div>
+
+      <div class="voice-hud">
+        <div class="voice-ring">🎤</div>
+        <div class="voice-wave">
+          <div class="wv"></div><div class="wv"></div><div class="wv"></div>
+          <div class="wv"></div><div class="wv"></div><div class="wv"></div>
+        </div>
+        <div class="voice-text">LISTENING — "Hey Nex, open Steam"</div>
+      </div>
+
+      <div class="app-win win1">
+        <div class="aw-bar">
+          <div class="aw-d" style="background:#ef4444"></div>
+          <div class="aw-d" style="background:#f59e0b"></div>
+          <div class="aw-d" style="background:#10b981"></div>
+          &nbsp;Steam
+        </div>
+        <div class="aw-body">🎮 Library<br>📦 Store<br>🕹 Controller</div>
+      </div>
+
+      <div class="app-win win2">
+        <div class="aw-bar">
+          <div class="aw-d" style="background:#ef4444"></div>
+          <div class="aw-d" style="background:#f59e0b"></div>
+          <div class="aw-d" style="background:#10b981"></div>
+          &nbsp;foot terminal
+        </div>
+        <div class="aw-body">nexos@host:~$ _<br><br><span style="color:#374151">summoned by voice</span></div>
+      </div>
+
+      <div class="shell-dock-wrap">
+        <div class="shell-dock">
+          <div class="da da-s">🎮</div>
+          <div class="da da-t">💻</div>
+          <div class="dsep"></div>
+          <div class="da da-b">🌐</div>
+          <div class="da da-g">⚙️</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="shell-specs">
+      <div class="ss-card"><div class="ss-lbl">Compositor</div><div class="ss-val">Hyprland (Wayland only). The one and only window manager. No alternatives exist on this system.</div></div>
+      <div class="ss-card"><div class="ss-lbl">Dock Rule</div><div class="ss-val">Only running/open apps appear. Auto-hides during fullscreen games. No static app launchers.</div></div>
+      <div class="ss-card"><div class="ss-lbl">Top Bar</div><div class="ss-val">Does not exist. No clock bar, no system tray, no notification bell. Voice handles all of this.</div></div>
+      <div class="ss-card"><div class="ss-lbl">App Launch</div><div class="ss-val">100% via voice command. No app grid, no start menu, no right-click desktop. Voice only.</div></div>
+      <div class="ss-card"><div class="ss-lbl">Settings</div><div class="ss-val">NexOS Settings Plugin appears as an overlay inside Hyprland — not a separate app or window.</div></div>
+      <div class="ss-card"><div class="ss-lbl">Terminal</div><div class="ss-val">foot (Wayland-native). Summoned via "Hey Nex, open terminal". Closes when dismissed.</div></div>
+      <div class="ss-card"><div class="ss-lbl">Notifications</div><div class="ss-val">mako daemon — small corner toasts only. Critical alerts spoken via Piper TTS. No notification center.</div></div>
+      <div class="ss-card"><div class="ss-lbl">File Manager</div><div class="ss-val">yazi TUI inside terminal — no GUI file manager. Voice search finds files directly.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 ARCHITECTURE -->
+<hr class="div">
+<section>
+  <div class="label">03 — Architecture</div>
+  <h2>Layered OS <span>Stack</span></h2>
+
+  <div class="arch-wrap">
+    <div class="arch-row" data-l="6">
+      <div class="arch-lbl"><div class="al-n">6</div><div class="al-t">Shell</div></div>
+      <div class="arch-body">
+        <div class="ab-t"><div class="ab-dot"></div>NexOS Shell — Hyprland + Dock + Voice HUD [ONLY GUI]</div>
+        <div class="ab-d">This is the entire graphical environment. Hyprland compositor manages floating app windows only when apps are open. The dock at the bottom shows only open apps. The voice HUD is the primary control surface. No other shell, panel, desktop environment, or window manager exists or is accessible on this system.</div>
+        <div class="chips">
+          <span class="chip c-o">Hyprland compositor</span><span class="chip c-o">Open-apps-only dock</span>
+          <span class="chip c-o">Voice HUD overlay</span><span class="chip c-o">mako (minimal toasts)</span>
+          <span class="chip c-o">swaylock (screen lock)</span>
+          <span class="chip c-r">No GNOME Shell</span><span class="chip c-r">No KDE Plasma</span>
+          <span class="chip c-r">No top bar</span><span class="chip c-r">No desktop icons</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-arr">▼ Voice NL → Intent → System Action ▼</div>
+
+    <div class="arch-row" data-l="5">
+      <div class="arch-lbl"><div class="al-n">5</div><div class="al-t">Voice</div></div>
+      <div class="arch-body">
+        <div class="ab-t"><div class="ab-dot"></div>Voice Engine — Primary Input Interface (Replaces Mouse/Keyboard)</div>
+        <div class="ab-d">Porcupine handles always-on wake word detection fully on-device. Whisper.cpp processes speech offline. Rhasspy NLU maps natural language to structured intents. The intent dispatcher controls the shell, launches apps, adjusts settings, manages games, and controls the entire OS — without touching a mouse, keyboard, or menu.</div>
+        <div class="chips">
+          <span class="chip c-b">Porcupine wake word</span><span class="chip c-b">Whisper.cpp STT</span>
+          <span class="chip c-b">Rhasspy NLU</span><span class="chip c-b">Piper TTS feedback</span>
+          <span class="chip c-b">Intent dispatcher</span><span class="chip c-b">Plugin command hooks</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-arr">▼</div>
+
+    <div class="arch-row" data-l="4">
+      <div class="arch-lbl"><div class="al-n">4</div><div class="al-t">Apps</div></div>
+      <div class="arch-body">
+        <div class="ab-t"><div class="ab-dot"></div>App Layer — Launched Into Shell On Demand by Voice</div>
+        <div class="ab-d">Apps have no permanent presence. They are summoned by voice and rendered as floating Wayland windows inside Hyprland. Settings, terminal, file manager, browser — all are voice-triggered and dismissed when done. Apps originate from APT / Flatpak but have no independent GUI launcher, shortcut, or icon outside the NexOS Shell.</div>
+        <div class="chips">
+          <span class="chip c-p">Steam</span><span class="chip c-p">Heroic / Lutris</span>
+          <span class="chip c-p">Firefox</span><span class="chip c-p">foot terminal</span>
+          <span class="chip c-p">Settings plugin</span><span class="chip c-p">OBS Studio</span>
+          <span class="chip c-r">No app grid</span><span class="chip c-r">No start menu</span><span class="chip c-r">No launcher bar</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-arr">▼</div>
+
+    <div class="arch-row" data-l="3">
+      <div class="arch-lbl"><div class="al-n">3</div><div class="al-t">Gaming</div></div>
+      <div class="arch-body">
+        <div class="ab-t"><div class="ab-dot"></div>Gaming Stack — Proton, Vulkan, GameMode</div>
+        <div class="ab-d">Steam with Proton-GE, DXVK for DX9/10/11, VKD3D-Proton for DX12, MangoHud overlay, GameMode daemon. All managed silently in background — no visible config GUI unless invoked by voice command ("show FPS", "enable game mode").</div>
+        <div class="chips">
+          <span class="chip c-g">Steam + Proton-GE</span><span class="chip c-g">DXVK 2.x</span>
+          <span class="chip c-g">VKD3D-Proton</span><span class="chip c-g">GameMode</span>
+          <span class="chip c-g">MangoHud</span><span class="chip c-g">OpenXR VR</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-arr">▼</div>
+
+    <div class="arch-row" data-l="2">
+      <div class="arch-lbl"><div class="al-n">2</div><div class="al-t">Kernel</div></div>
+      <div class="arch-body">
+        <div class="ab-t"><div class="ab-dot"></div>Linux 6.x — Xanmod-RT Low Latency Kernel</div>
+        <div class="ab-d">Real-time patched kernel with fsync and futex2 for Proton compatibility. ZRAM swap, BFQ I/O scheduler, Hugepages for game memory. CPU frequency managed automatically by GameMode — no manual tuning GUI required.</div>
+        <div class="chips">
+          <span class="chip c-r">Xanmod-RT</span><span class="chip c-r">fsync + futex2</span>
+          <span class="chip c-r">ZRAM</span><span class="chip c-r">BFQ I/O</span>
+          <span class="chip c-r">Hugepages</span><span class="chip c-r">Auto CPU governor</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-arr">▼</div>
+
+    <div class="arch-row" data-l="1">
+      <div class="arch-lbl"><div class="al-n">1</div><div class="al-t">Base</div></div>
+      <div class="arch-body">
+        <div class="ab-t"><div class="ab-dot"></div>Pop!_OS 24.04 — Stripped Core (Desktop Removed)</div>
+        <div class="ab-d">Pop!_OS provides the foundation: APT, systemd, LUKS2, btrfs, driver tooling, and NVIDIA management. The desktop layer (GNOME + GDM) is entirely purged. Only the headless OS core remains. NexOS Shell is the sole graphical layer built on top.</div>
+        <div class="chips">
+          <span class="chip c-a">Pop!_OS 24.04 core</span><span class="chip c-a">APT + Flatpak</span>
+          <span class="chip c-a">systemd</span><span class="chip c-a">LUKS2</span>
+          <span class="chip c-a">btrfs</span><span class="chip c-a">systemd-boot</span>
+          <span class="chip c-r">GNOME purged</span><span class="chip c-r">GDM masked</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 VOICE PIPELINE -->
+<hr class="div">
+<section>
+  <div class="label">04 — Voice Engine</div>
+  <h2>Voice <span>Processing Pipeline</span></h2>
+
+  <div class="vf">
+    <div class="vf-s">
+      <div class="vfs-n">STEP 01</div><div class="vfs-t">Wake Word</div>
+      <div class="vfs-d">Porcupine listens always-on. "Hey Nex" triggers pipeline. Fully on-device. &lt;5ms.</div>
+    </div>
+    <div class="vf-s">
+      <div class="vfs-n">STEP 02</div><div class="vfs-t">Speech → Text</div>
+      <div class="vfs-d">Whisper.cpp converts audio offline. Tiny model for speed, large model for accuracy.</div>
+    </div>
+    <div class="vf-s">
+      <div class="vfs-n">STEP 03</div><div class="vfs-t">NLU Parse</div>
+      <div class="vfs-d">Rhasspy maps utterance to intent + slots. "launch Steam" → {intent: app.open, app: steam}</div>
+    </div>
+    <div class="vf-s">
+      <div class="vfs-n">STEP 04</div><div class="vfs-t">Dispatch</div>
+      <div class="vfs-d">Routes to shell command, D-Bus call, Flatpak launch, plugin hook, or system action.</div>
+    </div>
+    <div class="vf-s">
+      <div class="vfs-n">STEP 05</div><div class="vfs-t">TTS + Visual</div>
+      <div class="vfs-d">Piper TTS speaks brief confirmation. Optional HUD pulse. App window appears in shell.</div>
+    </div>
+  </div>
+
+  <h2 style="margin-top:48px;margin-bottom:28px;">Voice Command <span>Reference</span></h2>
+  <div class="vc-grid">
+    <div class="vc-card">
+      <div class="vc-cat">🚀 App Launch</div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Hey Nex, open Steam"</div><div class="vc-a">Launches Steam as floating window in dock</div></div></div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Open my last game"</div><div class="vc-a">Launches most recently played title</div></div></div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Open terminal"</div><div class="vc-a">Spawns foot terminal window</div></div></div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Open settings"</div><div class="vc-a">Shows NexOS Settings plugin overlay</div></div></div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Close everything"</div><div class="vc-a">Gracefully closes all open windows</div></div></div>
+    </div>
+    <div class="vc-card">
+      <div class="vc-cat">🎮 Gaming</div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Enable game mode"</div><div class="vc-a">GameMode daemon + performance CPU governor</div></div></div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Show FPS overlay"</div><div class="vc-a">Toggles MangoHud on game window</div></div></div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Hide the dock"</div><div class="vc-a">Removes dock for clean fullscreen gaming</div></div></div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Take a screenshot"</div><div class="vc-a">grim capture saved to ~/Screenshots</div></div></div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Start recording"</div><div class="vc-a">wf-recorder begins capture session</div></div></div>
+    </div>
+    <div class="vc-card">
+      <div class="vc-cat">⚙️ System</div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Set volume to 60 percent"</div><div class="vc-a">wpctl adjusts PipeWire output</div></div></div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Check GPU temperature"</div><div class="vc-a">Reads sensors, speaks result via TTS</div></div></div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Update system"</div><div class="vc-a">apt/flatpak update, reports via TTS</div></div></div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Lock the screen"</div><div class="vc-a">swaylock activates immediately</div></div></div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Shutdown in 10 minutes"</div><div class="vc-a">systemd poweroff timer scheduled</div></div></div>
+    </div>
+    <div class="vc-card">
+      <div class="vc-cat">📂 Files &amp; Search</div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Find saves for Elden Ring"</div><div class="vc-a">Searches Proton prefix + ~/.local/share</div></div></div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Open downloads"</div><div class="vc-a">yazi TUI at ~/Downloads in terminal</div></div></div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"How much space is left?"</div><div class="vc-a">df -h result spoken via TTS</div></div></div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Search web for RTX benchmarks"</div><div class="vc-a">Opens browser with pre-filled search</div></div></div>
+    </div>
+    <div class="vc-card">
+      <div class="vc-cat">🎵 Media</div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Play next track"</div><div class="vc-a">MPRIS next command to active player</div></div></div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Pause"</div><div class="vc-a">MPRIS pause to active player</div></div></div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Mute microphone"</div><div class="vc-a">wpctl mute input device</div></div></div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Switch to headphones"</div><div class="vc-a">Changes PipeWire sink to headphone output</div></div></div>
+    </div>
+    <div class="vc-card">
+      <div class="vc-cat">🛡️ Security &amp; Permissions</div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Grant camera to OBS"</div><div class="vc-a">flatpak override allows camera portal</div></div></div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Revoke mic from Discord"</div><div class="vc-a">Removes mic permission via Flatpak portal</div></div></div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"Enable VPN"</div><div class="vc-a">Activates NM VPN profile via nmcli</div></div></div>
+      <div class="vc-row"><div class="vc-led"></div><div><div class="vc-q">"What's running?"</div><div class="vc-a">Reads list of open apps aloud</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 APP TABLE -->
+<hr class="div">
+<section>
+  <div class="label">05 — App Layer</div>
+  <h2>Apps Available in <span>Shell</span></h2>
+  <p style="color:var(--muted);font-size:14px;margin-bottom:28px;line-height:1.7;">All apps are summoned by voice into the NexOS Shell. None have their own icon, launcher, or start menu entry. They run as Wayland-native floating windows inside Hyprland and are dismissed when done.</p>
+
+  <table class="app-table">
+    <thead><tr><th>App</th><th>Voice Command</th><th>Source</th><th>Type</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">Steam</td><td>"Open Steam"</td><td>Flatpak / Valve</td><td><span class="badge b-g">GAMING</span></td></tr>
+      <tr><td class="mono">Heroic Games</td><td>"Open Epic games"</td><td>Flatpak</td><td><span class="badge b-g">GAMING</span></td></tr>
+      <tr><td class="mono">Lutris</td><td>"Open Lutris"</td><td>APT</td><td><span class="badge b-g">GAMING</span></td></tr>
+      <tr><td class="mono">foot</td><td>"Open terminal"</td><td>APT native</td><td><span class="badge b-n">NATIVE</span></td></tr>
+      <tr><td class="mono">Firefox</td><td>"Open browser"</td><td>Flatpak</td><td><span class="badge b-f">FLATPAK</span></td></tr>
+      <tr><td class="mono">NexOS Settings</td><td>"Open settings"</td><td>NexOS Plugin</td><td><span class="badge b-p">PLUGIN</span></td></tr>
+      <tr><td class="mono">yazi (files)</td><td>"Open files"</td><td>APT / cargo</td><td><span class="badge b-n">NATIVE TUI</span></td></tr>
+      <tr><td class="mono">OBS Studio</td><td>"Open OBS"</td><td>Flatpak</td><td><span class="badge b-f">FLATPAK</span></td></tr>
+      <tr><td class="mono">Spotify</td><td>"Open Spotify"</td><td>Flatpak</td><td><span class="badge b-f">FLATPAK</span></td></tr>
+      <tr><td class="mono">Discord</td><td>"Open Discord"</td><td>Flatpak</td><td><span class="badge b-f">FLATPAK</span></td></tr>
+      <tr><td class="mono">MangoHud</td><td>"Show FPS"</td><td>APT daemon</td><td><span class="badge b-p">OVERLAY</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 06 HARDWARE -->
+<hr class="div">
+<section>
+  <div class="label">06 — Hardware</div>
+  <h2>Hardware <span>Auto-Detection</span></h2>
+  <div class="hw-grid">
+    <div class="hw-card"><div class="hw-title">🟢 NVIDIA GPUs</div>
+      <div class="hw-row"><span class="hd d-a"></span>RTX 40/30/20 — driver-550 auto</div>
+      <div class="hw-row"><span class="hd d-a"></span>GTX 16xx — driver-550 auto</div>
+      <div class="hw-row"><span class="hd d-a"></span>nvidia-drm modeset=1 on boot</div>
+      <div class="hw-row"><span class="hd d-a"></span>CUDA + NVENC available</div>
+    </div>
+    <div class="hw-card"><div class="hw-title">🔴 AMD GPUs</div>
+      <div class="hw-row"><span class="hd d-a"></span>RX 7000/6000/5000 — AMDGPU</div>
+      <div class="hw-row"><span class="hd d-a"></span>Mesa RADV Vulkan driver</div>
+      <div class="hw-row"><span class="hd d-a"></span>RADV_PERFTEST auto-set</div>
+      <div class="hw-row"><span class="hd d-a"></span>FSR 3 via Mesa</div>
+    </div>
+    <div class="hw-card"><div class="hw-title">🔵 Intel GPUs</div>
+      <div class="hw-row"><span class="hd d-a"></span>Arc A-Series — ANV Vulkan</div>
+      <div class="hw-row"><span class="hd d-a"></span>Iris Xe — Mesa iris</div>
+      <div class="hw-row"><span class="hd d-m"></span>Resizable BAR — BIOS enable</div>
+      <div class="hw-row"><span class="hd d-a"></span>XeSS upscaling available</div>
+    </div>
+    <div class="hw-card"><div class="hw-title">🎮 Controllers</div>
+      <div class="hw-row"><span class="hd d-a"></span>Xbox USB/BT — xpad/xone</div>
+      <div class="hw-row"><span class="hd d-a"></span>PlayStation DualSense</div>
+      <div class="hw-row"><span class="hd d-a"></span>Steam Controller</div>
+      <div class="hw-row"><span class="hd d-p"></span>Custom HID — plugin API</div>
+    </div>
+    <div class="hw-card"><div class="hw-title">🥽 VR</div>
+      <div class="hw-row"><span class="hd d-a"></span>Valve Index — SteamVR</div>
+      <div class="hw-row"><span class="hd d-a"></span>Meta Quest — ALVR</div>
+      <div class="hw-row"><span class="hd d-m"></span>HP Reverb — WMR runtime</div>
+      <div class="hw-row"><span class="hd d-a"></span>OpenXR standard</div>
+    </div>
+    <div class="hw-card"><div class="hw-title">🔊 Peripherals</div>
+      <div class="hw-row"><span class="hd d-a"></span>USB Printers — CUPS</div>
+      <div class="hw-row"><span class="hd d-a"></span>Webcams — V4L2</div>
+      <div class="hw-row"><span class="hd d-a"></span>BT Audio — PipeWire HFP</div>
+      <div class="hw-row"><span class="hd d-a"></span>USB Audio — ALSA/PipeWire</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;padding:12px 18px;background:var(--surface);border:1px solid var(--border);border-radius:4px;">
+    <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;"><span class="hd d-a"></span>Auto at boot</span>
+    <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;"><span class="hd d-m"></span>Manual config</span>
+    <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;"><span class="hd d-p"></span>Via plugin</span>
+  </div>
+</section>
+
+<!-- 07 PACKAGES -->
+<hr class="div">
+<section>
+  <div class="label">07 — Packages</div>
+  <h2>Package <span>Configuration</span></h2>
+  <table class="pkg-table">
+    <thead><tr><th>Package</th><th>Source</th><th>Purpose</th><th>Priority</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">linux-xanmod-rt</td><td>xanmod.org PPA</td><td>RT patched kernel</td><td><span class="badge b-n">CORE</span></td></tr>
+      <tr><td class="mono">hyprland</td><td>Hyprland repo</td><td>The only compositor / WM</td><td><span class="badge b-n">CORE SHELL</span></td></tr>
+      <tr><td class="mono">waybar</td><td>APT</td><td>Dock (open apps only)</td><td><span class="badge b-n">CORE SHELL</span></td></tr>
+      <tr><td class="mono">mako</td><td>APT</td><td>Minimal notification daemon</td><td><span class="badge b-n">CORE SHELL</span></td></tr>
+      <tr><td class="mono">foot</td><td>APT</td><td>Wayland-native terminal</td><td><span class="badge b-n">CORE</span></td></tr>
+      <tr><td class="mono">swaylock</td><td>APT</td><td>Wayland screen lock</td><td><span class="badge b-n">CORE</span></td></tr>
+      <tr><td class="mono">whisper.cpp</td><td>Build from source</td><td>Offline STT engine</td><td><span class="badge b-g">VOICE</span></td></tr>
+      <tr><td class="mono">porcupine</td><td>pip / Picovoice</td><td>Always-on wake word</td><td><span class="badge b-g">VOICE</span></td></tr>
+      <tr><td class="mono">rhasspy</td><td>Rhasspy repo</td><td>NLU + intent router</td><td><span class="badge b-g">VOICE</span></td></tr>
+      <tr><td class="mono">piper-tts</td><td>Rhasspy</td><td>Offline TTS feedback</td><td><span class="badge b-g">VOICE</span></td></tr>
+      <tr><td class="mono">nvidia-driver-550</td><td>Pop!_OS OEM</td><td>NVIDIA proprietary</td><td><span class="badge b-n">CORE</span></td></tr>
+      <tr><td class="mono">mesa-vulkan-drivers</td><td>APT</td><td>AMD/Intel Vulkan</td><td><span class="badge b-n">CORE</span></td></tr>
+      <tr><td class="mono">pipewire + wireplumber</td><td>APT</td><td>Low-latency audio</td><td><span class="badge b-n">CORE</span></td></tr>
+      <tr><td class="mono">steam</td><td>Flatpak / Valve</td><td>Steam + Proton</td><td><span class="badge b-f">GAMING</span></td></tr>
+      <tr><td class="mono">proton-ge-custom</td><td>GloriousEggroll</td><td>Enhanced Proton</td><td><span class="badge b-f">GAMING</span></td></tr>
+      <tr><td class="mono">gamemode</td><td>Feral</td><td>CPU/GPU governor daemon</td><td><span class="badge b-f">GAMING</span></td></tr>
+      <tr><td class="mono">mangohud</td><td>APT</td><td>FPS / perf overlay</td><td><span class="badge b-f">GAMING</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 08 SECURITY -->
+<hr class="div">
+<section>
+  <div class="label">08 — Security</div>
+  <h2>Security <span>Architecture</span></h2>
+  <div class="sec-grid">
+    <div class="sec-card">
+      <div class="sec-h"><span class="sec-ico">🔐</span><div class="sec-t">Encryption</div></div>
+      <div class="sec-row"><span class="sc">✓</span> LUKS2 full-disk (optional at install)</div>
+      <div class="sec-row"><span class="sc">✓</span> TPM2 key enrollment for auto-unlock</div>
+      <div class="sec-row"><span class="sc">✓</span> Swap encrypted separately</div>
+      <div class="sec-row"><span class="sc">✓</span> Secure Boot via shim</div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-h"><span class="sec-ico">🧱</span><div class="sec-t">Attack Surface</div></div>
+      <div class="sec-row"><span class="sc">✓</span> SSH disabled by default</div>
+      <div class="sec-row"><span class="sc">✓</span> Unnecessary services masked</div>
+      <div class="sec-row"><span class="sc">✓</span> ufw firewall (deny all in)</div>
+      <div class="sec-row"><span class="sc">✓</span> AppArmor profiles for all apps</div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-h"><span class="sec-ico">🎤</span><div class="sec-t">Voice Privacy</div></div>
+      <div class="sec-row"><span class="sc">✓</span> Wake word fully on-device</div>
+      <div class="sec-row"><span class="sc">✓</span> STT defaults to offline Whisper</div>
+      <div class="sec-row"><span class="sc">✓</span> Zero cloud audio by default</div>
+      <div class="sec-row"><span class="ss">⚡</span> Online STT opt-in only</div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-h"><span class="sec-ico">📦</span><div class="sec-t">App Sandboxing</div></div>
+      <div class="sec-row"><span class="sc">✓</span> Flatpak portals for file/camera/mic</div>
+      <div class="sec-row"><span class="sc">✓</span> Permissions controlled by voice</div>
+      <div class="sec-row"><span class="sc">✓</span> Gaming apps confined to prefixes</div>
+      <div class="sec-row"><span class="sc">✓</span> XDG portal for all file access</div>
+    </div>
+  </div>
+</section>
+
+<!-- 09 PLUGIN -->
+<hr class="div">
+<section>
+  <div class="label">09 — Extensibility</div>
+  <h2>Plugin <span>Architecture</span></h2>
+  <div class="pf">
+    <div class="pf-s"><div class="pfs-n">STEP 01</div><div class="pfs-t">Manifest</div><div class="pfs-d">JSON descriptor defines voice intents, permissions, D-Bus events, and surface type.</div></div>
+    <div class="pf-s"><div class="pfs-n">STEP 02</div><div class="pfs-t">Intent Register</div><div class="pfs-d">Plugin registers commands with Rhasspy. New voice phrases become active immediately.</div></div>
+    <div class="pf-s"><div class="pfs-n">STEP 03</div><div class="pfs-t">Event Bus</div><div class="pfs-d">Subscribe to system events: game start/end, GPU temp, app open, volume change via D-Bus.</div></div>
+    <div class="pf-s"><div class="pfs-n">STEP 04</div><div class="pfs-t">Sandbox Exec</div><div class="pfs-d">Logic runs in isolated Python/Node runtime with scoped capabilities only.</div></div>
+    <div class="pf-s"><div class="pfs-n">STEP 05</div><div class="pfs-t">Shell Surface</div><div class="pfs-d">Output via Hyprland overlay, TTS voice, dock badge, or silent background action.</div></div>
+  </div>
+
+  <div class="cb" style="margin-top:22px;">
+    <div class="cbh">
+      <span class="cdd" style="background:#ef4444"></span>
+      <span class="cdd" style="background:#f59e0b"></span>
+      <span class="cdd" style="background:#10b981"></span>
+      nexos-settings/manifest.json — Settings plugin (replaces GNOME Control Center)
+    </div>
+    <pre>{
+  <span class="ck">"id"</span>: <span class="cs">"nexos.plugin.settings"</span>,
+  <span class="ck">"name"</span>: <span class="cs">"NexOS Settings Overlay"</span>,
+  <span class="ck">"replaces"</span>: <span class="cs">"gnome-control-center"</span>,
+  <span class="ck">"surface"</span>: <span class="cs">"hyprland-overlay"</span>,   <span class="co">// rendered inside NexOS Shell, not a separate window</span>
+  <span class="ck">"voice_intents"</span>: [
+    { <span class="ck">"command"</span>: <span class="cs">"open settings"</span>,        <span class="ck">"handler"</span>: <span class="cs">"show_panel"</span> },
+    { <span class="ck">"command"</span>: <span class="cs">"open display settings"</span>, <span class="ck">"handler"</span>: <span class="cs">"show_display"</span> },
+    { <span class="ck">"command"</span>: <span class="cs">"open network settings"</span>, <span class="ck">"handler"</span>: <span class="cs">"show_network"</span> },
+    { <span class="ck">"command"</span>: <span class="cs">"open sound settings"</span>,   <span class="ck">"handler"</span>: <span class="cs">"show_audio"</span> }
+  ],
+  <span class="ck">"permissions"</span>: [<span class="cs">"dbus.system"</span>, <span class="cs">"network.manager"</span>, <span class="cs">"display.manage"</span>],
+  <span class="ck">"entrypoint"</span>: <span class="cs">"settings_overlay.py"</span>
+}</pre>
+  </div>
+</section>
+
+<footer>
+  <strong>NexOS</strong><br><br>
+  Architecture Document v2.0 — Single Shell Edition<br>
+  Pop!_OS 24.04 Base · Linux 6.x Xanmod-RT · Hyprland Only · Voice-First · Zero Redundant DE
+</footer>
+
+</body>
+</html>

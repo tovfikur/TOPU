@@ -1,0 +1,98 @@
+# ═══════════════════════════════════════════════════════════════════
+#  TOPU OS — Packages to INCLUDE in the ISO
+#  One package per line. Comments allowed with #.
+# ═══════════════════════════════════════════════════════════════════
+
+# ── Core system ──────────────────────────────────────────────────────
+systemd
+systemd-sysv
+dbus
+apt-utils
+ca-certificates
+gnupg2
+curl
+wget
+sudo
+locales
+
+# ── Network ───────────────────────────────────────────────────────────
+network-manager
+iproute2
+iputils-ping
+net-tools
+wireless-tools
+wpasupplicant
+
+# ── Audio (PipeWire) ──────────────────────────────────────────────────
+pipewire
+pipewire-audio
+pipewire-pulse
+wireplumber
+alsa-utils
+
+# ── Wayland / Hyprland stack ──────────────────────────────────────────
+hyprland
+waybar
+mako-notifier
+foot
+swaylock
+swayidle
+xdg-desktop-portal-hyprland
+xdg-desktop-portal-gtk
+grim
+slurp
+wl-clipboard
+wf-recorder
+libwayland-client0
+libxkbcommon0
+
+# ── Vulkan / GPU ──────────────────────────────────────────────────────
+mesa-vulkan-drivers
+libvulkan1
+vulkan-tools
+mesa-utils
+libgbm1
+libegl1
+libgl1-mesa-dri
+
+# ── Gaming ────────────────────────────────────────────────────────────
+gamemode
+libgamemode0
+mangohud
+steam-devices
+
+# ── Flatpak ───────────────────────────────────────────────────────────
+flatpak
+xdg-utils
+
+# ── Security ──────────────────────────────────────────────────────────
+apparmor
+apparmor-utils
+ufw
+
+# ── Filesystem & Boot ─────────────────────────────────────────────────
+btrfs-progs
+e2fsprogs
+dosfstools
+cryptsetup
+cryptsetup-initramfs
+plymouth
+plymouth-themes
+systemd-boot
+efibootmgr
+
+# ── Fonts ─────────────────────────────────────────────────────────────
+fonts-jetbrains-mono
+fonts-noto
+fonts-noto-color-emoji
+
+# ── Dev/tools (minimal) ───────────────────────────────────────────────
+python3
+python3-pip
+git
+nano
+
+# ── Installer ─────────────────────────────────────────────────────────
+calamares
+live-boot
+live-config

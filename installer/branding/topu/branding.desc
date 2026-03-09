@@ -1,0 +1,29 @@
+---
+componentName:  TOPU OS
+shortDescription: A voice-first, gaming-native Linux OS
+productName:    TOPU OS
+productSlug:    topu
+version:        1.0
+shortVersion:   "1.0"
+versionedName:  "TOPU OS 1.0"
+bootloaderEntryName: TOPU
+productUrl:     https://github.com/tovfikur/TOPU
+supportUrl:     https://github.com/tovfikur/TOPU/issues
+releaseNotesUrl: https://github.com/tovfikur/TOPU/releases
+
+# Installer screen colors
+sidebarBackground:  "#06080d"
+sidebarText:        "#e2e8f0"
+sidebarTextSelect:  "#00d4ff"
+navigationBackground: "#0b0f18"
+navigationText:     "#e2e8f0"
+buttonBackground:   "#00d4ff"
+buttonText:         "#06080d"
+
+# Logo shown in installer (place logo.png in branding/topu/)
+logo:           "logo.png"
+productWelcomePage: "welcome.qml"
+
+# Slide show during install
+slideshowAPI: 2
+slideshow:    "show.qml"

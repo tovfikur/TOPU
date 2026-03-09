@@ -1,0 +1,78 @@
+* {
+  font-family: "JetBrains Mono", "Noto Sans", monospace;
+  font-size: 13px;
+}
+
+window#waybar {
+  background: rgba(6, 8, 13, 0.82);
+  border-top: 1px solid rgba(0, 212, 255, 0.12);
+  color: #e2e8f0;
+}
+
+/* ── Taskbar (center) ─────── */
+#taskbar {
+  margin: 0 8px;
+}
+
+#taskbar button {
+  padding: 4px 10px;
+  border-radius: 10px;
+  margin: 4px 3px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  transition: all 0.2s;
+  min-width: 44px;
+}
+
+#taskbar button:hover {
+  background: rgba(0, 212, 255, 0.12);
+  border-color: rgba(0, 212, 255, 0.3);
+  color: #00d4ff;
+}
+
+#taskbar button.active {
+  background: rgba(0, 212, 255, 0.15);
+  border-color: rgba(0, 212, 255, 0.4);
+  color: #00d4ff;
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.2);
+}
+
+/* ── Right modules ─────────── */
+#clock,
+#pulseaudio,
+#network,
+#battery,
+#custom-voice {
+  padding: 0 14px;
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+  color: #94a3b8;
+}
+
+#clock {
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+#pulseaudio.muted {
+  color: #ef4444;
+}
+
+#battery.warning {
+  color: #f59e0b;
+}
+
+#battery.critical {
+  color: #ef4444;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+#custom-voice.voice-active {
+  color: #00d4ff;
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1.0; }
+}

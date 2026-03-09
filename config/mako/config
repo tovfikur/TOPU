@@ -1,0 +1,28 @@
+[global]
+  font                 = JetBrains Mono 11
+  background-color     = rgba(6, 8, 13, 0.88)
+  text-color           = #e2e8f0
+  width                = 380
+  height               = 60
+  border-size          = 1
+  border-color         = rgba(0, 212, 255, 0.25)
+  border-radius        = 8
+  margin               = 12
+  padding              = 12 16
+  default-timeout      = 4000
+
+[urgency=low]
+  background-color     = rgba(11, 15, 24, 0.9)
+  text-color           = #64748b
+  border-color         = rgba(100, 116, 139, 0.3)
+
+[urgency=normal]
+  background-color     = rgba(6, 8, 13, 0.92)
+  text-color           = #e2e8f0
+  border-color         = rgba(0, 212, 255, 0.3)
+
+[urgency=critical]
+  background-color     = rgba(20, 5, 5, 0.95)
+  text-color           = #fca5a5
+  border-color         = rgba(239, 68, 68, 0.5)
+  default-timeout      = 0

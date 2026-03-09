@@ -1,0 +1,55 @@
+# TOPU OS GRUB Theme
+# Place this directory at: /boot/grub/themes/topu/
+
+desktop-image: "background.png"
+desktop-color: "#06080d"
+title-text:    ""
+
++ boot_menu {
+  left   = 50%-220
+  top    = 35%
+  width  = 440
+  height = 200
+
+  item_font       = "JetBrains Mono Regular 14"
+  item_color      = "#94a3b8"
+  selected_item_color = "#00d4ff"
+  selected_item_pixmap_style = "select_c/*.png"
+  item_height     = 38
+  item_padding    = 20
+  item_spacing    = 4
+
+  scrollbar       = false
+  scrollbar_width = 0
+}
+
++ label {
+  top   = 25%
+  left  = 50%-160
+  width = 320
+  align = "center"
+  id    = "__timeout__"
+  text  = "Booting TOPU OS in %d seconds"
+  color = "#64748b"
+  font  = "JetBrains Mono Regular 11"
+}
+
++ label {
+  top   = 8%
+  left  = 50%-200
+  width = 400
+  align = "center"
+  text  = "TOPU OS"
+  color = "#00d4ff"
+  font  = "Orbitron Bold 36"
+}
+
++ label {
+  top   = 16%
+  left  = 50%-200
+  width = 400
+  align = "center"
+  text  = "Voice-First · Gaming-Native"
+  color = "#64748b"
+  font  = "JetBrains Mono Regular 11"
+}

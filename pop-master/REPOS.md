@@ -1,0 +1,336 @@
+# Repositories
+This is an automatically generated file. See `scripts/readme`
+
+- [accountsservice](https://github.com/pop-os/accountsservice) - Pop\!\_OS fork of https://launchpad\.net/ubuntu/\+source/accountsservice
+- [acpid\-plug](https://github.com/pop-os/acpid-plug) - Rust crate for listening to AC adapter plug events on Linux from \`acpid\`\.
+- [adw\-gtk3](https://github.com/pop-os/adw-gtk3) - Packaging for https://github\.com/lassekongo83/adw\-gtk3
+- [alacritty](https://github.com/pop-os/alacritty) - A cross\-platform, GPU\-accelerated terminal emulator \(debian packaging fork\)
+- [alsa\-ucm\-conf](https://github.com/pop-os/alsa-ucm-conf) - ALSA Use Case Manager configuration
+- [alsa\-utils](https://github.com/pop-os/alsa-utils) - The Advanced Linux Sound Architecture \(ALSA\) \- utilities
+- [amd\-ppt\-bin](https://github.com/pop-os/amd-ppt-bin) - AMD PPT binary package
+- [amd64\-microcode](https://github.com/pop-os/amd64-microcode) - Fork of https://salsa\.debian\.org/janitor\-team/proposed/amd64\-microcode to backport newer microcode to Jammy
+- [analytics\-panel](https://github.com/pop-os/analytics-panel) - Analytics Settings Panel
+- [api](https://github.com/pop-os/api) - Rust crate for interacting with api\.pop\-os\.org
+- [appstream](https://github.com/pop-os/appstream) - Pop\!\_OS Fork of https://salsa\.debian\.org/pkgutopia\-team/appstream
+- [appstream\-data](https://github.com/pop-os/appstream-data) - Additional appstream data to be shipped in Pop\!\_OS
+- [appstream2dep11](https://github.com/pop-os/appstream2dep11) - A crate dedicated to parsing Appstream XML metadata to Debian DEP11 format\.
+- [apt](https://github.com/pop-os/apt) - Fork of https://salsa\.debian\.org/apt\-team/apt
+- [apt\-cli\-wrappers](https://github.com/pop-os/apt-cli-wrappers) - Rust crate which provides CLI wrappers for apt commands\.
+- [apt\-cmd](https://github.com/pop-os/apt-cmd) - Rust crate for interacting with apt commands
+- [apt\-fetcher](https://github.com/pop-os/apt-fetcher) - Rust crate for asynchronous and parallel fetching of apt repo files from apt repos\. This can be used for updating apt lists and fetching packages from a pool\.
+- [apt\-keyring](https://github.com/pop-os/apt-keyring) - Rust crate for loading all available apt keyrings into an in\-memory keyring\.
+- [apt\-mirror](https://github.com/pop-os/apt-mirror) - Official apt\-mirror source\.
+- [apt\-release\-file](https://github.com/pop-os/apt-release-file) - Rust crate for serializing / deserializing apt dist release files, which contain a listing of paths to other dist files in a repo\.
+- [apt\-repo\-crawler](https://github.com/pop-os/apt-repo-crawler) - Rust crate for crawling through files in an apt repo
+- [apt\-sources\-lists](https://github.com/pop-os/apt-sources-lists) - Rust crate for fetching detailed information from all available apt sources\. Additionally supports abstractions for modifying source lists on the system\.
+- [apt\.pop\-os\.org](https://github.com/pop-os/apt.pop-os.org) - Website files for apt\.pop\-os\.org
+- [as\-result](https://github.com/pop-os/as-result) - Rust crate which provides the \`AsResult<T, E>\` and \`IntoResult<T, E>\` traits\.
+- [async\-cron\-scheduler](https://github.com/pop-os/async-cron-scheduler) - Runtime\-agnostic async task scheduler with cron expression support
+- [async\-fetcher](https://github.com/pop-os/async-fetcher) - Rust crate for asynchronous file fetching, using optional fetching based on modified times and checksums
+- [at\-spi2\-core](https://github.com/pop-os/at-spi2-core)
+- [atom\-editor](https://github.com/pop-os/atom-editor) - GitHub's Atom Editor
+- [bcmwl](https://github.com/pop-os/bcmwl) - Pop\!\_OS fork of https://launchpad\.net/ubuntu/\+source/bcmwl
+- [beta](https://github.com/pop-os/beta) - Pop\!\_OS Beta
+- [blkid](https://github.com/pop-os/blkid) - Rust blkid safe interface
+- [bubblewrap](https://github.com/pop-os/bubblewrap) - Fork of https://salsa\.debian\.org/debian/bubblewrap
+- [buildchain](https://github.com/pop-os/buildchain) - Software for creating and managing a distributed and reproducible chain of builds
+- [bus\-writer](https://github.com/pop-os/bus-writer) - Single\-reader, multi\-writer & single\-reader, multi\-verifier; broadcasts reads to multiple writeable destinations in parallel
+- [bustd](https://github.com/pop-os/bustd) - \`bustd\`: Available memory or bust\!
+- [client\-toolkit](https://github.com/pop-os/client-toolkit) - Smithay's toolkit for writing wayland clients
+- [code\-of\-conduct](https://github.com/pop-os/code-of-conduct) - Code of Conduct for the Pop Community
+- [cog\-stable\-diffusion](https://github.com/pop-os/cog-stable-diffusion) - Packaging for convenience of installation and setup of stable diffusion on Pop
+- [connectivity](https://github.com/pop-os/connectivity) - The Pop\!\_OS Connectivity Checker
+- [console\-setup](https://github.com/pop-os/console-setup) - Fork of https://salsa\.debian\.org/installer\-team/console\-setup
+- [core](https://github.com/pop-os/core) - WIP immutable base
+- [cosmic\-app\-library](https://github.com/pop-os/cosmic-app-library) - WIP
+- [cosmic\-app\-template](https://github.com/pop-os/cosmic-app-template) - Project template for creating applications for the COSMIC™ desktop
+- [cosmic\-applet\-host](https://github.com/pop-os/cosmic-applet-host)
+- [cosmic\-applet\-template](https://github.com/pop-os/cosmic-applet-template) - Project template for creating applets for the COSMIC™ desktop
+- [cosmic\-applets](https://github.com/pop-os/cosmic-applets) - WIP applets for cosmic\-panel
+- [cosmic\-application\-template](https://github.com/pop-os/cosmic-application-template)
+- [cosmic\-bg](https://github.com/pop-os/cosmic-bg) - COSMIC session service which applies backgrounds to displays\.
+- [cosmic\-comp](https://github.com/pop-os/cosmic-comp) - Compositor for the COSMIC desktop environment
+- [cosmic\-config\-demo](https://github.com/pop-os/cosmic-config-demo)
+- [cosmic\-design\-demo](https://github.com/pop-os/cosmic-design-demo) - libcosmic widget toolkit showcase for testing COSMIC widgets and their styling
+- [cosmic\-dock](https://github.com/pop-os/cosmic-dock) - Pop\!\_OS fork of https://github\.com/micheleg/dash\-to\-dock/tree/ubuntu\-dock
+- [cosmic\-edit](https://github.com/pop-os/cosmic-edit) - COSMIC Text Editor
+- [cosmic\-epoch](https://github.com/pop-os/cosmic-epoch) - Next generation Cosmic desktop environment
+- [cosmic\-files](https://github.com/pop-os/cosmic-files) - COSMIC file manager
+- [cosmic\-flatpak](https://github.com/pop-os/cosmic-flatpak) - COSMIC Flatpak Repository
+- [cosmic\-flatpak\-runtime](https://github.com/pop-os/cosmic-flatpak-runtime) - COSMIC runtimes for flatpak applications
+- [cosmic\-greeter](https://github.com/pop-os/cosmic-greeter) - libcosmic greeter for greetd, which can be run inside cosmic\-comp
+- [cosmic\-icons](https://github.com/pop-os/cosmic-icons) -  System76 Cosmic icon theme for Linux 
+- [cosmic\-idle](https://github.com/pop-os/cosmic-idle) - Timer to blank the screen/lock the session in the COSMIC desktop environment
+- [cosmic\-initial\-setup](https://github.com/pop-os/cosmic-initial-setup) - COSMIC Initial Setup
+- [cosmic\-justfiles](https://github.com/pop-os/cosmic-justfiles) - Justfile scripts shared between COSMIC and Pop\!\_OS projects\.
+- [cosmic\-launcher](https://github.com/pop-os/cosmic-launcher) - WIP
+- [cosmic\-mime\-apps](https://github.com/pop-os/cosmic-mime-apps) - Parse and update xdg mimeapps\.list files to manage default apps
+- [cosmic\-notifications](https://github.com/pop-os/cosmic-notifications)
+- [cosmic\-osd](https://github.com/pop-os/cosmic-osd)
+- [cosmic\-osk](https://github.com/pop-os/cosmic-osk) - COSMIC On\-Screen Keyboard
+- [cosmic\-panel](https://github.com/pop-os/cosmic-panel) - COSMIC applet for creating panels and docks
+- [cosmic\-player](https://github.com/pop-os/cosmic-player) - WIP COSMIC media player
+- [cosmic\-protocols](https://github.com/pop-os/cosmic-protocols) - Additional wayland\-protocols used by the COSMIC desktop environment
+- [cosmic\-randr](https://github.com/pop-os/cosmic-randr) - Library and utility for displaying and configuring Wayland outputs
+- [cosmic\-reader](https://github.com/pop-os/cosmic-reader) - WIP COSMIC PDF reader
+- [cosmic\-screenshot](https://github.com/pop-os/cosmic-screenshot) - Utility for capturing screenshots via XDG Desktop Portal
+- [cosmic\-session](https://github.com/pop-os/cosmic-session) - Session manager for the COSMIC desktop environment
+- [cosmic\-settings](https://github.com/pop-os/cosmic-settings) - COSMIC Settings
+- [cosmic\-settings\-daemon](https://github.com/pop-os/cosmic-settings-daemon)
+- [cosmic\-settings\-subscriptions](https://github.com/pop-os/cosmic-settings-subscriptions)
+- [cosmic\-store](https://github.com/pop-os/cosmic-store) - WIP COSMIC app store
+- [cosmic\-syntax\-theme](https://github.com/pop-os/cosmic-syntax-theme) - COSMIC Syntax Theme
+- [cosmic\-term](https://github.com/pop-os/cosmic-term) - WIP COSMIC terminal emulator
+- [cosmic\-text](https://github.com/pop-os/cosmic-text) - Pure Rust multi\-line text handling
+- [cosmic\-theme](https://github.com/pop-os/cosmic-theme) - WIP
+- [cosmic\-theme\-editor](https://github.com/pop-os/cosmic-theme-editor) - WIP
+- [cosmic\-time](https://github.com/pop-os/cosmic-time) - Animation Library for https://github\.com/iced\-rs/iced and https://github\.com/pop\-os/cosmic\-epoch
+- [cosmic\-wallpapers](https://github.com/pop-os/cosmic-wallpapers) - Wallpapers for the COSMIC Desktop Environment
+- [cosmic\-workspaces](https://github.com/pop-os/cosmic-workspaces) - Pop\!\_OS fork of https://github\.com/RensAlthuis/vertical\-overview
+- [cosmic\-workspaces\-epoch](https://github.com/pop-os/cosmic-workspaces-epoch)
+- [cosmic\_undo\_2](https://github.com/pop-os/cosmic_undo_2) - Fork of https://gitlab\.com/okannen/undo\_2 with improved compiler support
+- [cryptsetup](https://github.com/pop-os/cryptsetup) - Packaging for https://gitlab\.com/cryptsetup/cryptsetup
+- [dbus\-settings\-bindings](https://github.com/pop-os/dbus-settings-bindings) - Rust bindings for D\-Bus settings interfaces
+- [dbus\-udisks2](https://github.com/pop-os/dbus-udisks2) - Rust library for interacting with the UDisks2 DBus API
+- [dbusmenu\-zbus](https://github.com/pop-os/dbusmenu-zbus) - zbus bindings for dbusmenu
+- [deb\-architectures](https://github.com/pop-os/deb-architectures) - Rust crate for parsing Debian architecture strings into an enum, and vice versa\. Additionally supports fetching a list of supported architectures\.
+- [deb\-changelog](https://github.com/pop-os/deb-changelog) - Rust crate for efficiently parsing and appending entries to a debian changelog
+- [deb\-control](https://github.com/pop-os/deb-control) - Zero\-copy parser & futures codec for Debian control files
+- [deb\-diversion](https://github.com/pop-os/deb-diversion) - Futures codec for Debian's dpkg diversion file
+- [debarchive](https://github.com/pop-os/debarchive) - Rust crate which provides direct access to files within a Debian archive
+- [debconf](https://github.com/pop-os/debconf) - Repackaging of https://code\.launchpad\.net/ubuntu/\+source/debconf
+- [debrepbuild](https://github.com/pop-os/debrepbuild) - A project for automatically generating and maintaining Debian repositories from a TOML spec\. 
+- [deckard](https://github.com/pop-os/deckard) - A Pop\!\_Shop compatible api server
+- [default\-settings](https://github.com/pop-os/default-settings) - Distribution Default Settings
+- [desktop](https://github.com/pop-os/desktop) - Desktop metapackage
+- [desktop\-icons\-ng](https://github.com/pop-os/desktop-icons-ng) - Packaging of https://gitlab\.com/rastersoft/desktop\-icons\-ng
+- [desktop\-widget](https://github.com/pop-os/desktop-widget) - Pop Desktop Settings Widget
+- [directx\-headers](https://github.com/pop-os/directx-headers) - Mesa backport of https://code\.launchpad\.net/ubuntu/\+source/directx\-headers
+- [disk\-types](https://github.com/pop-os/disk-types) - Rust crate with common types and traits for handling block devices, partitions, file systems, etc\.
+- [distinst](https://github.com/pop-os/distinst) - Installer Backend
+- [distinst\-v2](https://github.com/pop-os/distinst-v2) - Distinst Rewrite as a DBus Service
+- [docs](https://github.com/pop-os/docs) - Pop\!\_OS Documentation Site
+- [dwarves](https://github.com/pop-os/dwarves) - Pop\!\_OS fork of https://salsa\.debian\.org/debian/dwarves\.git
+- [ecs\-disk\-manager](https://github.com/pop-os/ecs-disk-manager) - Rust library experiment to design a flexible disk management library with an ECS architecture\.
+- [eddy](https://github.com/pop-os/eddy) - A debian package installer for Pop\!\_OS
+- [egl\-wayland](https://github.com/pop-os/egl-wayland) - Packaging for nvidia egl\-wayland
+- [envfile](https://github.com/pop-os/envfile) - Rust crate for reading an environment file into an in\-memory map, updating it, and writing it back\.
+- [exit\-status\-ext](https://github.com/pop-os/exit-status-ext) - Rust trait for extending \`std::process::ExitStatus\`
+- [fd\-reactor](https://github.com/pop-os/fd-reactor) - A Rust crate which provides an async reactor for handling file descriptors in a background thread
+- [firmware\-manager](https://github.com/pop-os/firmware-manager) - Generic framework and GTK UI for firmware updates from system76\-firmware and fwupd, written in Rust\.
+- [flatpak](https://github.com/pop-os/flatpak) - Fork of https://salsa\.debian\.org/debian/flatpak
+- [fonts](https://github.com/pop-os/fonts) - Fonts for the System76 Pop look, Fira and Roboto Slab
+- [freedesktop\-desktop\-entry](https://github.com/pop-os/freedesktop-desktop-entry) - Rust crate for navigating Freedesktop desktop entries
+- [freedesktop\-icons](https://github.com/pop-os/freedesktop-icons) - A rust freedestkop icon lookup implementation
+- [fs\_extra](https://github.com/pop-os/fs_extra) - Expanding opportunities standard library std::fs and std::io
+- [fwts](https://github.com/pop-os/fwts) - Backports of https://github\.com/fwts/fwts/ with Linux kernel patches
+- [fwupd](https://github.com/pop-os/fwupd) - A simple daemon to allow session software to update firmware
+- [fwupd\-dbus](https://github.com/pop-os/fwupd-dbus) - Rust crate which provides a client for the fwupd DBus daemon
+- [fwupd\-efi](https://github.com/pop-os/fwupd-efi) - Pop\!\_OS fork of https://salsa\.debian\.org/efi\-team/fwupd\-efi
+- [gamehub](https://github.com/pop-os/gamehub) - Pop\!\_OS fork of https://github\.com/tkashkin/GameHub
+- [gamescope](https://github.com/pop-os/gamescope) - Packaging for https://github\.com/ValveSoftware/gamescope
+- [gdm3](https://github.com/pop-os/gdm3) - Pop\!\_OS fork of https://git\.launchpad\.net/~ubuntu\-desktop/ubuntu/\+source/gdm3
+- [gir](https://github.com/pop-os/gir) - Tool to generate rust bindings and user API for glib\-based libraries
+- [glyphon](https://github.com/pop-os/glyphon) - 🦅🦁 Fast, simple 2D text renderer for wgpu
+- [gnome\-control\-center](https://github.com/pop-os/gnome-control-center) - Pop\!\_OS fork of https://git\.launchpad\.net/~ubuntu\-desktop/ubuntu/\+source/gnome\-control\-center
+- [gnome\-disk\-utility](https://github.com/pop-os/gnome-disk-utility) - Pop\!\_OS fork of https://salsa\.debian\.org/gnome\-team/gnome\-disk\-utility
+- [gnome\-initial\-setup](https://github.com/pop-os/gnome-initial-setup) - Pop\!\_OS fork of https://git\.launchpad\.net/~ubuntu\-desktop/ubuntu/\+source/gnome\-initial\-setup
+- [gnome\-online\-accounts](https://github.com/pop-os/gnome-online-accounts) - Pop\!\_OS fork of https://git\.launchpad\.net/~ubuntu\-desktop/ubuntu/\+source/gnome\-online\-accounts
+- [gnome\-settings\-daemon](https://github.com/pop-os/gnome-settings-daemon) - Pop\!\_OS fork of https://git\.launchpad\.net/~ubuntu\-desktop/ubuntu/\+source/gnome\-settings\-daemon
+- [gnome\-shell](https://github.com/pop-os/gnome-shell) - Pop\!\_OS fork of https://git\.launchpad\.net/~ubuntu\-desktop/ubuntu/\+source/gnome\-shell
+- [gnome\-shell\-extension\-alt\-tab\-raise\-first\-window](https://github.com/pop-os/gnome-shell-extension-alt-tab-raise-first-window) - Make Alt\+Tab only raise the first window in group\.
+- [gnome\-shell\-extension\-always\-show\-workspaces](https://github.com/pop-os/gnome-shell-extension-always-show-workspaces) - Always show workspaces in overview
+- [gnome\-shell\-extension\-do\-not\-disturb](https://github.com/pop-os/gnome-shell-extension-do-not-disturb) - Enable or disable do not disturb mode\.
+- [gnome\-shell\-extension\-gsconnect](https://github.com/pop-os/gnome-shell-extension-gsconnect) - KDE Connect implementation for GNOME
+- [gnome\-shell\-extension\-pop\-battery\-icon\-fix](https://github.com/pop-os/gnome-shell-extension-pop-battery-icon-fix) - Fixes the battery icon in Pop\!\_OS to correctly match the current battery level\.
+- [gnome\-shell\-extension\-pop\-cosmic](https://github.com/pop-os/gnome-shell-extension-pop-cosmic) - GNOME Shell extension\. See cosmic\-epoch for COSMIC Epoch
+- [gnome\-shell\-extension\-pop\-shop\-details](https://github.com/pop-os/gnome-shell-extension-pop-shop-details) - Adds a Show Details item to applications if Pop Shop is installed
+- [gnome\-shell\-extension\-pop\-snapshot](https://github.com/pop-os/gnome-shell-extension-pop-snapshot) - A simple GNOME Shell extension for notifying the user when a snapshot is restored
+- [gnome\-shell\-extension\-pop\-suspend\-button](https://github.com/pop-os/gnome-shell-extension-pop-suspend-button) - GNOME Shell Extension Suspend\-Button
+- [gnome\-shell\-extension\-popx11gestures](https://github.com/pop-os/gnome-shell-extension-popx11gestures) - Fork of https://github\.com/JoseExposito/gnome\-shell\-extension\-x11gestures with modifications for Pop\!\_OS
+- [gnome\-shell\-extension\-system76\-power](https://github.com/pop-os/gnome-shell-extension-system76-power) - System76 Power Management Extension
+- [gnome\-shell\-theme](https://github.com/pop-os/gnome-shell-theme) - The GNOME Shell theme for Pop\!\_OS
+- [gnome\-terminal](https://github.com/pop-os/gnome-terminal) - Fork of https://salsa\.debian\.org/gnome\-team/gnome\-terminal\.git
+- [granite](https://github.com/pop-os/granite) - Library that extends GTK with common widgets and utilities
+- [greetd](https://github.com/pop-os/greetd) - Fork of greetd, with debian packaging support
+- [grub\-theme](https://github.com/pop-os/grub-theme) - Grub bootloader theme
+- [gtk\-extras](https://github.com/pop-os/gtk-extras) - Rust crate containing an assortment of extra, unofficial GTK patterns, widgets, and traits\.
+- [gtk\-rs](https://github.com/pop-os/gtk-rs) - Fork of gtk\-rs to build with Ubuntu's Rustc version\.
+- [gtk\-theme](https://github.com/pop-os/gtk-theme) - System76 Pop GTK\+ Theme
+- [gtk4](https://github.com/pop-os/gtk4) - Forked from https://salsa\.debian\.org/gnome\-team/gtk4
+- [gvfs\-zbus](https://github.com/pop-os/gvfs-zbus) - zbus bindings to gvfs interfaces
+- [gweather\-rs](https://github.com/pop-os/gweather-rs) - Rust wrapper for gweather
+- [happiness](https://github.com/pop-os/happiness) - Send random quotes about happiness to your desktop
+- [hidpi\-daemon](https://github.com/pop-os/hidpi-daemon) - Daemon to manage HiDPI and LoDPI monitors on X
+- [hidpi\-widget](https://github.com/pop-os/hidpi-widget) - GTK widget for the System76 HiDPI daemon
+- [hostname\-validator](https://github.com/pop-os/hostname-validator) - Rust crate for validating hostnames according to the IETF RFC 1123
+- [hp\-vendor](https://github.com/pop-os/hp-vendor) - Vendor support for HP products using Pop\!\_OS
+- [hp\-wallpapers](https://github.com/pop-os/hp-wallpapers) - Wallpapers for HP products
+- [iced](https://github.com/pop-os/iced) - A cross\-platform GUI library for Rust, inspired by Elm
+- [iced\-launcher](https://github.com/pop-os/iced-launcher)
+- [iced\-sctk](https://github.com/pop-os/iced-sctk) - WIP
+- [iced\-workspaces\-applet](https://github.com/pop-os/iced-workspaces-applet)
+- [iced\_aw](https://github.com/pop-os/iced_aw) - Additional widgets for the Iced GUI library
+- [icon\-theme](https://github.com/pop-os/icon-theme) - System76 Pop icon theme for Linux
+- [initramfs\-tools](https://github.com/pop-os/initramfs-tools) - Patches to https://packages\.ubuntu\.com/jammy\-updates/initramfs\-tools
+- [installer](https://github.com/pop-os/installer) - Installer for Pop\!\_OS & other Linux\-based OSes
+- [intel\-pstate](https://github.com/pop-os/intel-pstate) - Rust crate for fetching and modifying Intel pstate kernel parameters
+- [iso](https://github.com/pop-os/iso) - Pop\!\_OS ISO production
+- [just](https://github.com/pop-os/just) - Packaging fork of https://github\.com/casey/just
+- [kbuild](https://github.com/pop-os/kbuild) - Pop\!\_OS packaging for https://salsa\.debian\.org/pkg\-virtualbox\-team/kbuild
+- [kernelstub](https://github.com/pop-os/kernelstub) - A simple EFI boot manager manager for Linux
+- [keyboard\-configurator](https://github.com/pop-os/keyboard-configurator) - Keyboard configuration UI
+- [keyring](https://github.com/pop-os/keyring) - Pop\!\_OS keyring
+- [kit](https://github.com/pop-os/kit) - Pop\!\_Kits \- Discipline\-specific toolkits for Makers
+- [launch\-pad](https://github.com/pop-os/launch-pad) - Automatic process management library for Rust
+- [launcher](https://github.com/pop-os/launcher) - Modular IPC\-based desktop launcher service
+- [libabigail](https://github.com/pop-os/libabigail) - Pop\!\_OS fork of https://launchpad\.net/ubuntu/\+source/libabigail
+- [libasound2](https://github.com/pop-os/libasound2) - The Advanced Linux Sound Architecture \(ALSA\) \- library
+- [libbpf](https://github.com/pop-os/libbpf) - Pop\!\_OS fork of https://github\.com/sudipm\-mukherjee/libbpf
+- [libcosmic](https://github.com/pop-os/libcosmic) - GUI platform toolkit for developing COSMIC applications and applets
+- [libcosmic\-book](https://github.com/pop-os/libcosmic-book) - Guide for starting development with libcosmic: https://pop\-os\.github\.io/libcosmic\-book/
+- [libdrm](https://github.com/pop-os/libdrm) - Backport of https://salsa\.debian\.org/xorg\-team/lib/libdrm
+- [libhandy](https://github.com/pop-os/libhandy) - Read\-only mirror of https://gitlab\.gnome\.org/GNOME/libhandy
+- [libinput](https://github.com/pop-os/libinput) - Backport of https://salsa\.debian\.org/xorg\-team/lib/libinput
+- [libnvidia\-container](https://github.com/pop-os/libnvidia-container) - Pop\!\_OS packaging of https://gitlab\.com/nvidia/container\-toolkit/libnvidia\-container
+- [libparted](https://github.com/pop-os/libparted) - Rust wrappers for libparted
+- [libtraceevent](https://github.com/pop-os/libtraceevent) - Backport of https://packages\.ubuntu\.com/noble/libtraceevent\-dev
+- [libtracefs](https://github.com/pop-os/libtracefs) - Backport of https://packages\.ubuntu\.com/noble/libtracefs1
+- [libvdpau](https://github.com/pop-os/libvdpau) - Backported dependency of mesa from https://salsa\.debian\.org/nvidia\-team/libvdpau
+- [libwnck3](https://github.com/pop-os/libwnck3) - Packaging based on https://salsa\.debian\.org/gnome\-team/libwnck3
+- [libxmlb](https://github.com/pop-os/libxmlb) - Debian packaging for bionic
+- [linux](https://github.com/pop-os/linux) - Pop\!\_OS fork of https://launchpad\.net/ubuntu/\+source/linux
+- [linux\-firmware](https://github.com/pop-os/linux-firmware) - Pop\!\_OS fork of https://git\.launchpad\.net/ubuntu/\+source/linux\-firmware
+- [logind\-dbus](https://github.com/pop-os/logind-dbus) - Rust crate that provides a DBus API for interacting with logind, which is useful for doing things such as inhibiting suspension\.
+- [lutris](https://github.com/pop-os/lutris) - Packaging for https://github\.com/lutris/lutris
+- [mesa](https://github.com/pop-os/mesa) - Forked from https://salsa\.debian\.org/xorg\-team/lib/mesa
+- [meson\-1\.5](https://github.com/pop-os/meson-1.5) - Backport of https://launchpad\.net/ubuntu/\+source/meson\-1\.5 for Pop 22\.04
+- [meta\-python](https://github.com/pop-os/meta-python) - Transitional metapackage for python2
+- [modit](https://github.com/pop-os/modit) - Modal Editor Parser
+- [mouse\-configurator](https://github.com/pop-os/mouse-configurator) - Configurator for HP 935 Creator Wireless Mouse
+- [mpris2\-zbus](https://github.com/pop-os/mpris2-zbus) - Migrated to https://github\.com/pop\-os/dbus\-settings\-bindings
+- [msttcorefonts](https://github.com/pop-os/msttcorefonts) - Fixed packaging for ttf\-mscorefonts\-installer on Pop
+- [mutter](https://github.com/pop-os/mutter) - Pop\!\_OS fork of https://git\.launchpad\.net/~ubuntu\-desktop/ubuntu/\+source/mutter
+- [mutter\-rs](https://github.com/pop-os/mutter-rs) - Rust wrappers for Mutter and related projects
+- [network\-manager\-applet](https://github.com/pop-os/network-manager-applet) - COSMIC desktop entry patch to https://salsa\.debian\.org/utopia\-team/network\-manager\-applet
+- [ninja\-build](https://github.com/pop-os/ninja-build) - Pop\!\_OS fork of https://salsa\.debian\.org/debian/ninja\-build
+- [nvidia\-container\-runtime](https://github.com/pop-os/nvidia-container-runtime) - Packaging fork of https://gitlab\.com/nvidia/container\-toolkit/nvidia\-container\-runtime/
+- [nvidia\-container\-toolkit](https://github.com/pop-os/nvidia-container-toolkit) - Packaging fork of https://gitlab\.com/nvidia/container\-toolkit/container\-toolkit
+- [nvidia\-docker](https://github.com/pop-os/nvidia-docker) - Packaging for https://github\.com/NVIDIA/nvidia\-docker
+- [nvidia\-graphics\-drivers](https://github.com/pop-os/nvidia-graphics-drivers) - NVIDIA packaging repository for Pop\!\_OS
+- [nvidia\-graphics\-drivers\-470](https://github.com/pop-os/nvidia-graphics-drivers-470) - Pop\!\_OS Legacy NVIDIA Graphics Drivers \(470\)
+- [nvidia\-vaapi\-driver](https://github.com/pop-os/nvidia-vaapi-driver) - Packaging fork of https://github\.com/elFarto/nvidia\-vaapi\-driver
+- [opt](https://github.com/pop-os/opt) - Pop\!\_OS Optimization
+- [orca](https://github.com/pop-os/orca) - Packaging for https://gitlab\.gnome\.org/mwcampbell/orca/\-/tree/newton
+- [os\-autoinst\-distri\-pop](https://github.com/pop-os/os-autoinst-distri-pop) - os\-autoinst test cases for Pop\!\_OS \(for use with openQA\)
+- [os\-release](https://github.com/pop-os/os-release) - Rust crate for parsing the /etc/os\-release file, common with Linux distributions
+- [packagekit\-zbus](https://github.com/pop-os/packagekit-zbus) - Rust bindings for PackageKit
+- [packaging\-ci](https://github.com/pop-os/packaging-ci) - WIP Rust rewrite of the Pop packaging CI script, using async/await
+- [packaging\-cog](https://github.com/pop-os/packaging-cog) - Packaging for https://github\.com/replicate/cog
+- [packaging\-firefox](https://github.com/pop-os/packaging-firefox) - Debian packaging of Mozilla Firefox
+- [packaging\-julia](https://github.com/pop-os/packaging-julia) - Packaging of Julia lang from official julialang\.org releases
+- [packaging\-kinect](https://github.com/pop-os/packaging-kinect) - https://web\.cs\.ucdavis\.edu/~okreylos/ResDev/Kinect/index\.html
+- [packaging\-natron](https://github.com/pop-os/packaging-natron) - debrep\-compatible Debian packaging for Natron
+- [packaging\-rust](https://github.com/pop-os/packaging-rust) - Packaging of Rust toolchain from official rust\-lang\.org releases
+- [packaging\-sarndbox](https://github.com/pop-os/packaging-sarndbox) - https://web\.cs\.ucdavis\.edu/~okreylos/ResDev/SARndbox
+- [packaging\-thunderbird](https://github.com/pop-os/packaging-thunderbird) - Debian packaging of Mozilla Thunderbird
+- [packaging\-vrui](https://github.com/pop-os/packaging-vrui) - https://web\.cs\.ucdavis\.edu/~okreylos/ResDev/Vrui/
+- [partition\-identity](https://github.com/pop-os/partition-identity) - Find the ID of a device by its path, or find a device path by its ID\.
+- [pidfd](https://github.com/pop-os/pidfd) - Rust crate providing Linux \(>= 5\.3\) PID file descriptor support
+- [pipewire](https://github.com/pop-os/pipewire) - Packaging fork
+- [pipewire\-rs](https://github.com/pop-os/pipewire-rs) - Fork of https://gitlab\.freedesktop\.org/pipewire/pipewire\-rs
+- [plymouth](https://github.com/pop-os/plymouth) - Pop\!\_OS fork of https://salsa\.debian\.org/debian/plymouth
+- [plymouth\-theme](https://github.com/pop-os/plymouth-theme) - Plymouth splash screen themes
+- [pop](https://github.com/pop-os/pop) - A project for managing all Pop\!\_OS sources
+- [pop\-arm64](https://github.com/pop-os/pop-arm64) - Experimental scripts for building an Pop\!\_OS for ARM64 EFI platforms\.
+- [pop\-sync](https://github.com/pop-os/pop-sync) - WIP utility for syncing Pop\!\_OS utilities
+- [popsec](https://github.com/pop-os/popsec) - WIP Pop\!\_OS Security Daemon and Settings
+- [popsicle](https://github.com/pop-os/popsicle) - Multiple USB File Flasher
+- [proc\-modules](https://github.com/pop-os/proc-modules) - Rust crate for fetching a list of kernel modules from /proc/modules
+- [proc\-mounts](https://github.com/pop-os/proc-mounts) - Rust crate for fetching active mounts and swaps on a Linux system
+- [progress\-streams](https://github.com/pop-os/progress-streams) - Rust crate to extend io::Read & io::Write types with progress callbacks
+- [protonvpn\-nm\-lib](https://github.com/pop-os/protonvpn-nm-lib) - ProtonVPN NM Library
+- [pyflatpak](https://github.com/pop-os/pyflatpak) - A simple Python wrapper around flatpak commands
+- [python\-apt](https://github.com/pop-os/python-apt) - Pop\!\_OS fork of https://salsa\.debian\.org/apt\-team/python\-apt
+- [raspi\-img](https://github.com/pop-os/raspi-img) - Raspberry Pi 4 Image
+- [recently\-used\-xbel](https://github.com/pop-os/recently-used-xbel) - Rust crate to parse ~/\.local/share/recently\-used\.xbel
+- [repo\-curated\-free](https://github.com/pop-os/repo-curated-free) - APT repository configuration for building an apt repository with only free software\.
+- [repo\-multiarch](https://github.com/pop-os/repo-multiarch) - Future repository configuration for i386 packages
+- [repo\-proprietary](https://github.com/pop-os/repo-proprietary) - Configuration for building the proprietary repo with debrep
+- [repo\-release](https://github.com/pop-os/repo-release) - Produces Pop release package repositories
+- [repo\-ubuntu\-mirror](https://github.com/pop-os/repo-ubuntu-mirror) - APT repository configuration for building an apt mirror of Ubuntu
+- [repolib](https://github.com/pop-os/repolib) - Python library for managing APT sources
+- [repoman](https://github.com/pop-os/repoman) - Easily manage PPAs
+- [rtl8821ce\-dkms](https://github.com/pop-os/rtl8821ce-dkms) - Backports of https://packages\.ubuntu\.com/kinetic/rtl8821ce\-dkms
+- [rust\-bindgen\-cli](https://github.com/pop-os/rust-bindgen-cli) - Backport for Linux builds https://code\.launchpad\.net/ubuntu/\+source/rust\-bindgen\-cli
+- [rust\-tss\-esapi](https://github.com/pop-os/rust-tss-esapi) - TSS 2\.0 Enhanced System API \(ESAPI\) Rust wrapper
+- [sctk\-adwaita](https://github.com/pop-os/sctk-adwaita) - Adwaita\-like SCTK Frame
+- [session](https://github.com/pop-os/session) - Session default settings
+- [sessioninstaller](https://github.com/pop-os/sessioninstaller) - Pop\!\_OS fork of https://launchpad\.net/sessioninstaller
+- [shell](https://github.com/pop-os/shell) - Pop\!\_OS Shell
+- [shell\-shortcuts](https://github.com/pop-os/shell-shortcuts) - Application for displaying and demoing Pop Shell shortcuts
+- [shop](https://github.com/pop-os/shop) - Pop\!\_Shop
+- [sideload](https://github.com/pop-os/sideload) - Fork of https://github\.com/elementary/sideload
+- [simple\-wrapper](https://github.com/pop-os/simple-wrapper)
+- [smithay](https://github.com/pop-os/smithay) - Fork of https://github\.com/Smithay/smithay with pending patches
+- [smithay\-clipboard](https://github.com/pop-os/smithay-clipboard) - Provides access to the wayland clipboard for client applications
+- [snapshot](https://github.com/pop-os/snapshot) - A utility for taking btrfs snapshots of Pop\!\_OS installs
+- [softbuffer](https://github.com/pop-os/softbuffer) - Softbuffer integrates with the raw\-window\-handle crate to allow writing to a window in a cross\-platform way while using the very high quality dedicated window management libraries that are available in the Rust ecosystem\.
+- [spirv\-headers](https://github.com/pop-os/spirv-headers) - Mesa backport of https://code\.launchpad\.net/ubuntu/\+source/spirv\-headers
+- [spirv\-llvm\-translator\-15](https://github.com/pop-os/spirv-llvm-translator-15) - Backport missing spirv library for Mesa to Jammy
+- [spirv\-tools](https://github.com/pop-os/spirv-tools) - Mesa backport of https://code\.launchpad\.net/ubuntu/\+source/spirv\-tools
+- [sponsors](https://github.com/pop-os/sponsors) - The API behind Pop\!\_OS donations
+- [srmw](https://github.com/pop-os/srmw) - Rust crate which provides async functions to read data from a single reader, and write it to many writers\.
+- [steam](https://github.com/pop-os/steam) - Fork of https://salsa\.debian\.org/games\-team/steam\-installer with improved packaging for Pop
+- [support\-panel](https://github.com/pop-os/support-panel) - Support panel for the settings application in Pop\!\_OS
+- [switcheroo\-control](https://github.com/pop-os/switcheroo-control) - Fork of https://salsa\.debian\.org/gnome\-team/switcheroo\-control
+- [sys\-mount](https://github.com/pop-os/sys-mount) - High level FFI binding around the sys mount & umount2 calls, for Rust
+- [sysfs\-class](https://github.com/pop-os/sysfs-class) - Rust library for viewing /sys/class in an object\-oriented format
+- [system\-updater](https://github.com/pop-os/system-updater) - Systemd services for checking for and applying system updates\.
+- [system76\-acpi\-dkms](https://github.com/pop-os/system76-acpi-dkms) - System76 ACPI Driver \(DKMS\)
+- [system76\-dkms](https://github.com/pop-os/system76-dkms) - System76 DKMS driver
+- [system76\-driver](https://github.com/pop-os/system76-driver) - System76 Driver for Pop\!\_OS
+- [system76\-firmware](https://github.com/pop-os/system76-firmware) - System76 Firmware Tool and Daemon
+- [system76\-io\-dkms](https://github.com/pop-os/system76-io-dkms) - DKMS module for controlling System76 Io board
+- [system76\-oled](https://github.com/pop-os/system76-oled) - Control brightness on OLED displays
+- [system76\-power](https://github.com/pop-os/system76-power) - Power profile management for Linux
+- [system76\-scheduler](https://github.com/pop-os/system76-scheduler) - Auto\-configure CFS and process priorities for improved desktop responsiveness
+- [system76\-wallpapers](https://github.com/pop-os/system76-wallpapers) - System76 Wallpapers
+- [systemd](https://github.com/pop-os/systemd) - Pop\!\_OS fork of https://git\.launchpad\.net/~ubuntu\-core\-dev/ubuntu/\+source/systemd
+- [systemd\-boot\-conf](https://github.com/pop-os/systemd-boot-conf) - Rust crate for managing the systemd\-boot loader configuration\.
+- [tensorman](https://github.com/pop-os/tensorman) - Utility for easy management of Tensorflow containers
+- [theme](https://github.com/pop-os/theme) - A metapackage including pop\-fonts, pop\-gtk\-theme, and pop\-icon\-theme
+- [theme\-switcher](https://github.com/pop-os/theme-switcher) - Pop\!\_OS GTK widget library / app for switching themes
+- [tiler](https://github.com/pop-os/tiler) - Generic tiling window manager library in Rust
+- [timedate\-zbus](https://github.com/pop-os/timedate-zbus) - Migrated to https://github\.com/pop\-os/dbus\-settings\-bindings
+- [token\_expander](https://github.com/pop-os/token_expander) - Rust crate with a shell\-like tokenizer & token expander
+- [touchegg](https://github.com/pop-os/touchegg) - Pop\!\_OS fork of https://github\.com/JoseExposito/touchegg
+- [tpm2\-totp](https://github.com/pop-os/tpm2-totp) - Attest the trustworthiness of a device against a human using time\-based one\-time passwords
+- [transition](https://github.com/pop-os/transition) - Simple Dialog to allow users to transition deprecated Debian packages to Flatpak
+- [ubuntu\-drivers\-common](https://github.com/pop-os/ubuntu-drivers-common) - Pop\!\_OS fork of https://git\.launchpad\.net/ubuntu/\+source/ubuntu\-drivers\-common
+- [ubuntu\-meta](https://github.com/pop-os/ubuntu-meta) - Pop\_OS\! fork of https://packages\.ubuntu\.com/kinetic/ubuntu\-minimal
+- [ubuntu\-version](https://github.com/pop-os/ubuntu-version) - Rust crate to convert Ubuntu versions to codenames, and vice versa\.
+- [upgrade](https://github.com/pop-os/upgrade) - Utility for upgrading Pop\!\_OS and its recovery partition to new releases\.
+- [upower\-dbus](https://github.com/pop-os/upower-dbus) - Migrated to https://github\.com/pop\-os/dbus\-settings\-bindings
+- [url\-scraper](https://github.com/pop-os/url-scraper) - Rust crate for scraping URLs from HTML pages
+- [usb\-disk\-probe](https://github.com/pop-os/usb-disk-probe) - Rust crate which provides a stream type which can be used to probe for USB storage devices in the system\.
+- [v4l2loopback](https://github.com/pop-os/v4l2loopback) - Backports from https://code\.launchpad\.net/ubuntu/\+source/v4l2loopback
+- [virtualbox](https://github.com/pop-os/virtualbox) - Pop\!\_OS fork of https://salsa\.debian\.org/pkg\-virtualbox\-team/virtualbox\.git
+- [virtualbox\-ext\-pack](https://github.com/pop-os/virtualbox-ext-pack) - Fork of https://salsa\.debian\.org/pkg\-virtualbox\-team/virtualbox\-ext\-pack
+- [vulkan\-loader](https://github.com/pop-os/vulkan-loader) - Backport of https://salsa\.debian\.org/xorg\-team/vulkan/vulkan\-loader/
+- [wallpapers](https://github.com/pop-os/wallpapers) - Wallpapers for Pop\!\_OS
+- [wayland](https://github.com/pop-os/wayland) - Backport of https://salsa\.debian\.org/xorg\-team/wayland/
+- [wayland\-protocols](https://github.com/pop-os/wayland-protocols) - Backport of https://salsa\.debian\.org/xorg\-team/wayland/wayland\-protocols for Mesa packaging
+- [website](https://github.com/pop-os/website) - The Pop\!\_OS website
+- [wgpu](https://github.com/pop-os/wgpu) - Cross\-platform, safe, pure\-rust graphics api\.
+- [whitespace\-conf](https://github.com/pop-os/whitespace-conf) - Parses configuration files which are key\-value pairs delimited by whitespace\.
+- [window\_clipboard](https://github.com/pop-os/window_clipboard) - A library to obtain clipboard access from a \`raw\-window\-handle\`\.
+- [winit](https://github.com/pop-os/winit) - Development fork
+- [wireplumber](https://github.com/pop-os/wireplumber) - Backports of https://salsa\.debian\.org/utopia\-team/wireplumber
+- [xdg\-desktop\-portal\-cosmic](https://github.com/pop-os/xdg-desktop-portal-cosmic)
+- [xdg\-shell\-wrapper](https://github.com/pop-os/xdg-shell-wrapper) - WIP xdg\-shell wrapper
+- [xkb\-data](https://github.com/pop-os/xkb-data) - Keyboard layout data from xkb\-data
+- [xorgproto](https://github.com/pop-os/xorgproto) - Backport of https://salsa\.debian\.org/xorg\-team/proto/xorgproto
+- [xwayland](https://github.com/pop-os/xwayland) - Backport of https://salsa\.debian\.org/xorg\-team/xwayland/
+- [xz\-utils](https://github.com/pop-os/xz-utils) - Pop\!\_OS Fork of https://salsa\.debian\.org/debian/xz\-utils
+- [zfs\-linux](https://github.com/pop-os/zfs-linux) - Pop\!\_OS fork of https://salsa\.debian\.org/zfsonlinux\-team/zfs\.git

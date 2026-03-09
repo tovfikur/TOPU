@@ -1,0 +1,52 @@
+/*
+ * TOPU OS — Plymouth Boot Splash Script
+ * Shows TOPU logo centered on a dark background with a progress bar
+ */
+
+Window.SetBackgroundTopColor(0.02, 0.03, 0.05);   /* #060810 */
+Window.SetBackgroundBottomColor(0.04, 0.06, 0.10);
+
+/* ── Logo ─────────────────────────────────────────────── */
+logo.image   = Image("topu-logo.png");
+logo.sprite  = Sprite(logo.image);
+logo.x       = Window.GetWidth()  / 2 - logo.image.GetWidth()  / 2;
+logo.y       = Window.GetHeight() / 2 - logo.image.GetHeight() / 2 - 40;
+logo.sprite.SetPosition(logo.x, logo.y, 10);
+
+/* ── Title text ───────────────────────────────────────── */
+title.image  = Image.Text("TOPU OS", 0.0, 0.83, 1.0);  /* cyan */
+title.sprite = Sprite(title.image);
+title.x      = Window.GetWidth()  / 2 - title.image.GetWidth()  / 2;
+title.y      = logo.y + logo.image.GetHeight() + 18;
+title.sprite.SetPosition(title.x, title.y, 10);
+
+/* ── Progress bar ─────────────────────────────────────── */
+bar_width  = 300;
+bar_height = 3;
+bar_x      = Window.GetWidth() / 2 - bar_width / 2;
+bar_y      = Window.GetHeight() - 60;
+
+bar_bg.image  = Image(bar_width, bar_height);
+bar_bg.scaled = bar_bg.image.Scale(bar_width, bar_height);
+bar_bg.sprite = Sprite(bar_bg.scaled);
+bar_bg.sprite.SetPosition(bar_x, bar_y, 5);
+
+bar_fill.image  = Image(1, bar_height);
+bar_fill.sprite = Sprite();
+bar_fill.sprite.SetPosition(bar_x, bar_y, 6);
+
+fun boot_progress_cb(duration, progress) {
+    w = Math.Int(bar_width * progress);
+    if (w < 1) { w = 1; }
+    bar_fill.sprite.SetImage(bar_fill.image.Scale(w, bar_height));
+}
+
+Plymouth.SetBootProgressFunction(boot_progress_cb);
+
+fun quit_cb() {
+    logo.sprite.SetOpacity(0);
+    title.sprite.SetOpacity(0);
+    bar_bg.sprite.SetOpacity(0);
+    bar_fill.sprite.SetOpacity(0);
+}
+Plymouth.SetQuitFunction(quit_cb);

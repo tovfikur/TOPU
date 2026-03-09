@@ -1,0 +1,63 @@
+# ═══════════════════════════════════════════════════════════════════
+#  TOPU OS — Packages to REMOVE from Pop!_OS base
+#  These are stripped during the post-install chroot step.
+# ═══════════════════════════════════════════════════════════════════
+
+# ── GNOME desktop ─────────────────────────────────────────────────────
+gnome-shell
+gnome-session
+gnome-session-bin
+gnome-settings-daemon
+gnome-control-center
+gnome-software
+gnome-shell-extensions
+gnome-shell-extension-prefs
+gnome-terminal
+gnome-calculator
+gnome-system-monitor
+gnome-disk-utility
+gnome-logs
+
+# ── GNOME apps ────────────────────────────────────────────────────────
+nautilus
+eog
+evince
+gedit
+file-roller
+totem
+cheese
+
+# ── Display managers ──────────────────────────────────────────────────
+gdm3
+gdm
+lightdm
+sddm
+xdm
+
+# ── Xorg / X11 ────────────────────────────────────────────────────────
+xorg
+xserver-xorg
+xserver-xorg-core
+xserver-xorg-video-all
+x11-apps
+x11-utils
+x11-common
+
+# ── Pop!_OS-specific desktop packages ─────────────────────────────────
+pop-desktop
+pop-gnome-shell-theme
+pop-icon-theme
+pop-fonts
+pop-shop
+
+# ── Ubuntu desktop meta ───────────────────────────────────────────────
+ubuntu-desktop
+ubuntu-desktop-minimal
+ubuntu-gnome-desktop
+
+# ── KDE / other DEs (ensure never installed) ─────────────────────────
+plasma-desktop
+kde-plasma-desktop
+xfce4
+mate-desktop-environment
+lxde

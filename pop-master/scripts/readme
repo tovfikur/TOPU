@@ -1,0 +1,33 @@
+#!/usr/bin/env python3
+
+import argparse
+import sys
+
+from lib import foreach_repo, markdown_escape
+
+parser = argparse.ArgumentParser(description="Generate gitignore file")
+parser.add_argument("repos", nargs="*", default=[])
+args = parser.parse_args(sys.argv[1:])
+
+f = open("REPOS.md", "w")
+
+f.write("# Repositories\n")
+f.write("This is an automatically generated file. See `scripts/readme`\n\n")
+
+def callback(repo):
+    if repo['visibility'] == 'private':
+        return;
+
+    print("\x1B[1m" + repo["name"] + "\x1B[0m")
+
+    name = markdown_escape(repo["name"])
+    if repo["description"] is not None:
+        description = " - " + markdown_escape(repo["description"])
+    else:
+        description = ""
+
+    f.write("- [" + name + "](" + repo["html_url"] + ")" + description + "\n")
+
+foreach_repo(callback, args.repos)
+
+f.close()

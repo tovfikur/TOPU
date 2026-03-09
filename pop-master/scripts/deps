@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+# You may need to run this if on jammy in order to build noble systemd:
+# sudo add-apt-repository ppa:upstream-systemd-ci/systemd-ci
+
+set -e
+
+PACKAGES=(
+    appstream-generator # for repo-release
+    auto-apt-proxy # for detecting apt proxy when building sbuild chroot
+    cargo # for rust packages
+    devscripts # for all packages
+    debhelper # for most packages
+    dh-apport # for ubuntu-drivers-common
+    dh-dlopenlibdeps # for systemd
+    dh-migrations # for gnome-control-center
+    dh-modaliases # for bcmwl
+    dh-package-notes # for systemd
+    dh-python # for hidpi-daemon
+    dh-sequence-installnss # for systemd
+    dh-sequence-installsysusers # for systemd
+    gnome-pkg-tools # for gnome-settings-daemon
+    gobject-introspection # for fwupd and gdm3
+    just # for cosmic packages
+    kernel-wedge # for linux
+    libdrm-dev # for ubuntu-drivers-common
+    libkmod-dev # for ubuntu-drivers-common
+    libpciaccess-dev # for ubuntu-drivers-common
+    libtraceevent-dev # for libtracefs and linux kernel
+    pkg-config # for mozc
+    po4a # for debconf
+    python3-distutils-extra # for sessioninstaller
+    python3-setuptools # for python-apt and ubuntu-drivers-common
+    quilt # for packages that use patches
+    sphinx-common # for python-apt
+    squid-deb-proxy # for caching apt packages
+)
+
+sudo apt install --yes "${PACKAGES[@]}"

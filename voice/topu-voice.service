@@ -1,0 +1,22 @@
+[Unit]
+Description=TOPU Voice Engine Daemon
+After=pipewire.service network.target
+Wants=pipewire.service
+
+[Service]
+Type=simple
+User=topu
+Group=audio
+Environment="WAYLAND_DISPLAY=wayland-1"
+Environment="XDG_RUNTIME_DIR=/run/user/1000"
+ExecStart=/usr/bin/python3 /usr/local/bin/topu-voice
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+# Load API key from secure env file (created during install/setup)
+EnvironmentFile=-/etc/topu/voice.env
+
+[Install]
+WantedBy=graphical.target

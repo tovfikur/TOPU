@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -e
+
+cargo build --release --manifest-path scripts/pop-ci/Cargo.toml
+exec scripts/pop-ci/target/release/pop-ci "$@"

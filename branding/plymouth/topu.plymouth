@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=TOPU
+Description=TOPU OS Boot Splash
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/topu
+ScriptFile=/usr/share/plymouth/themes/topu/topu.script
