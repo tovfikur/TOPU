@@ -131,7 +131,19 @@ echo "────────────────────────�
 cd "$TOPU_DEV/rhasspy3"
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+# rhasspy3 uses pyproject.toml, not requirements.txt
+if [ -f "requirements.txt" ]; then
+  pip install -r requirements.txt
+elif [ -f "pyproject.toml" ] || [ -f "setup.py" ]; then
+  pip install -e .
+else
+  # Install core rhasspy3 deps manually
+  pip install \
+    flask flask-cors \
+    requests aiohttp \
+    pyyaml pysilero-vad
+  warn "rhasspy3 requirements not found — installed core deps manually"
+fi
 deactivate
 cd "$TOPU_DEV"
 
