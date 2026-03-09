@@ -37,18 +37,18 @@ echo -e "${BOLD}║           TOPU OS — ISO Build System  v${ISO_VERSION}     
 echo -e "${BOLD}╚══════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
+# ── Checks ───────────────────────────────────────────────────────────
+[[ $EUID -ne 0 ]] && fail "This script must be run as root (sudo bash build.sh)"
+
 # ── Install build tools (self-contained — no pre-install needed) ──────
 log "Installing ISO build tools..."
-apt-get update -qq
+apt-get update -qq --allow-releaseinfo-change 2>/dev/null || apt-get update -qq || true
 apt-get install -y \
   debootstrap squashfs-tools xorriso \
   grub-pc-bin grub-efi-amd64-bin \
   mtools dosfstools isolinux syslinux-common \
   live-build git curl wget python3 build-essential cmake &>/dev/null
 ok "Build tools ready"
-
-# ── Checks ───────────────────────────────────────────────────────────
-[[ $EUID -ne 0 ]] && fail "This script must be run as root (sudo bash build.sh)"
 
 # ── Clean dirs ────────────────────────────────────────────────────────
 log "Preparing build directories..."
@@ -73,12 +73,19 @@ mount --bind /run     "$CHROOT_DIR/run"
 # Set up resolv.conf for DNS inside chroot
 cp /etc/resolv.conf "$CHROOT_DIR/etc/resolv.conf"
 
-# Set up APT sources
+# Set up APT sources (Ubuntu only — no 3rd party repos to avoid GPG issues)
 cat > "$CHROOT_DIR/etc/apt/sources.list" <<EOF
 deb $MIRROR $SUITE main restricted universe multiverse
 deb $MIRROR $SUITE-updates main restricted universe multiverse
 deb $MIRROR $SUITE-security main restricted universe multiverse
-deb http://apt.pop-os.org/release noble main
+EOF
+
+# Pre-accept apt mirror errors (transient sync issues)
+mkdir -p "$CHROOT_DIR/etc/apt/apt.conf.d"
+cat > "$CHROOT_DIR/etc/apt/apt.conf.d/99topu-build" <<EOF
+Acquire::Check-Valid-Until "false";
+Acquire::Retries "3";
+APT::Get::Fix-Missing "true";
 EOF
 
 # Copy project configs into chroot
