@@ -150,8 +150,17 @@ cd "$TOPU_DEV"
 echo ""
 echo "▸ Installing Piper TTS"
 echo "─────────────────────────────────────────"
-cd "$TOPU_DEV/piper"
-pip3 install --break-system-packages -e . 2>/dev/null || pip3 install -e .
+# Pop!_OS 24.04 / Ubuntu 24.04 blocks system-wide pip installs (PEP 668).
+# Install piper-tts inside a dedicated venv instead.
+PIPER_VENV="$TOPU_DEV/piper-venv"
+python3 -m venv "$PIPER_VENV"
+"$PIPER_VENV/bin/pip" install --upgrade pip -q
+"$PIPER_VENV/bin/pip" install piper-tts
+echo "  Piper installed in: $PIPER_VENV"
+echo "  Run it with: $PIPER_VENV/bin/piper"
+# Symlink to /usr/local/bin so voice daemon can find it
+sudo ln -sf "$PIPER_VENV/bin/piper" /usr/local/bin/piper 2>/dev/null || \
+  warn "Could not symlink piper to /usr/local/bin (run manually if needed)"
 cd "$TOPU_DEV"
 
 echo ""
