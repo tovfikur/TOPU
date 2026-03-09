@@ -20,9 +20,15 @@ cat > /etc/hosts <<EOF
 127.0.1.1   topu
 EOF
 
-# ── APT setup ─────────────────────────────────────────────────────────
+# ── APT setup ───────────────────────────────────────────────────
+# Switch to Azure CDN mirror (more reliable than archive.ubuntu.com)
+sed -i 's|http://archive.ubuntu.com/ubuntu|http://az.archive.ubuntu.com/ubuntu|g' \
+  /etc/apt/sources.list 2>/dev/null || true
+
 log "Updating package lists..."
-apt-get update -q
+# Use || true so a partial mirror sync never kills the build
+apt-get update -q --fix-missing 2>/dev/null || \
+  apt-get update -q -o Acquire::Retries=3 2>/dev/null || true
 
 # ── Install locales FIRST (locale-gen needs this) ─────────────────────
 log "Installing locales..."
@@ -34,7 +40,7 @@ export LANG=en_US.UTF-8
 
 # ── Core system packages ───────────────────────────────────────────────
 log "Installing core system packages..."
-apt-get install -y --no-install-recommends \
+apt-get install -y --no-install-recommends --fix-missing \
   linux-image-generic linux-headers-generic \
   systemd systemd-sysv dbus \
   apt-utils ca-certificates gnupg2 curl wget sudo \
@@ -53,7 +59,7 @@ apt-get install -y --no-install-recommends \
 
 # ── Calamares installer ────────────────────────────────────────────────
 log "Installing Calamares installer..."
-apt-get install -y calamares 2>/dev/null || \
+apt-get install -y --fix-missing calamares 2>/dev/null || \
   warn "calamares not in default repos — skipping (install manually post-build)"
 
 # ── Xanmod RT Kernel ──────────────────────────────────────────────────
@@ -62,7 +68,7 @@ wget -qO - https://dl.xanmod.org/archive.key | \
   gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg
 echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' \
   > /etc/apt/sources.list.d/xanmod-release.list
-apt-get update -q
+apt-get update -q --fix-missing 2>/dev/null || true
 apt-get install -y linux-xanmod-rt-x64v3 2>/dev/null || \
   warn "Xanmod RT not available — using generic kernel"
 ok "Kernel installed"
@@ -72,7 +78,7 @@ log "Adding Hyprland PPA..."
 apt-get install -y software-properties-common 2>/dev/null || true
 add-apt-repository -y ppa:hyprwm/hyprland 2>/dev/null || \
   warn "Hyprland PPA unavailable"
-apt-get update -q
+apt-get update -q --fix-missing 2>/dev/null || true
 
 log "Installing Wayland and Hyprland stack..."
 apt-get install -y \
