@@ -164,9 +164,23 @@ sudo ln -sf "$PIPER_VENV/bin/piper" /usr/local/bin/piper 2>/dev/null || \
 cd "$TOPU_DEV"
 
 echo ""
-echo "▸ Installing yazi (Rust TUI file manager)"
+echo "▸ Installing yazi (TUI file manager — pre-built binary)"
 echo "─────────────────────────────────────────"
-cargo install yazi-fm yazi-cli
+# cargo install breaks on latest yazi due to rand_core v0.10 API conflict.
+# Use the official pre-built binary instead (faster + reliable).
+YAZI_VER="25.2.7"
+YAZI_URL="https://github.com/sxyazi/yazi/releases/download/v${YAZI_VER}/yazi-x86_64-unknown-linux-gnu.zip"
+YAZI_ZIP="/tmp/yazi-${YAZI_VER}.zip"
+YAZI_TMP="/tmp/yazi-extracted"
+
+echo "  Downloading yazi v${YAZI_VER}..."
+wget -q "$YAZI_URL" -O "$YAZI_ZIP"
+unzip -q "$YAZI_ZIP" -d "$YAZI_TMP"
+sudo cp "$YAZI_TMP/yazi-x86_64-unknown-linux-gnu/yazi" /usr/local/bin/yazi
+sudo cp "$YAZI_TMP/yazi-x86_64-unknown-linux-gnu/ya"   /usr/local/bin/ya
+sudo chmod +x /usr/local/bin/yazi /usr/local/bin/ya
+rm -rf "$YAZI_ZIP" "$YAZI_TMP"
+echo "  yazi installed: $(yazi --version 2>/dev/null || echo 'ok')"
 
 echo ""
 echo "╔══════════════════════════════════════════════════════╗"
