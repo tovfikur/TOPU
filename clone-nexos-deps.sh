@@ -1,19 +1,20 @@
 #!/bin/bash
 # ═══════════════════════════════════════════════════════════════════
-#  NexOS — Dependency Clone Script
-#  Run this on: WSL2 (Ubuntu 24.04) or your Linux VM (Pop!_OS 24.04)
+#  TOPU OS — Dependency Clone Script
+#  Run this on: Pop!_OS 24.04 VM (recommended) or WSL2 Ubuntu 24.04
 #  Usage:  bash clone-nexos-deps.sh
 # ═══════════════════════════════════════════════════════════════════
 
-set -e  # Exit on any error
+set -e
+warn() { echo "  [WARN] $1 — continuing anyway"; }
 
-NEXOS_DEV="$HOME/nexos-dev"
-mkdir -p "$NEXOS_DEV"
-cd "$NEXOS_DEV"
+TOPU_DEV="$HOME/topu-dev"
+mkdir -p "$TOPU_DEV"
+cd "$TOPU_DEV"
 
 echo ""
 echo "╔══════════════════════════════════════════════════════╗"
-echo "║         NexOS Dev Setup — Cloning Repos              ║"
+echo "║          TOPU OS — Dev Setup & Clone Repos           ║"
 echo "╚══════════════════════════════════════════════════════╝"
 echo ""
 
@@ -39,14 +40,7 @@ clone_repo "mako"      "https://github.com/emersion/mako.git"
 clone_repo "swaylock"  "https://github.com/swaywm/swaylock.git"
 clone_repo "swayidle"  "https://github.com/swaywm/swayidle.git"
 clone_repo "yazi"      "https://github.com/sxyazi/yazi.git"
-
-# foot terminal is on Codeberg
-if [ -d "foot" ]; then
-  echo "  [SKIP]  foot already exists"
-else
-  echo "  [CLONE] foot"
-  git clone https://codeberg.org/dnkl/foot.git foot
-fi
+clone_repo "foot"      "https://codeberg.org/dnkl/foot.git"
 
 echo ""
 echo "▸ [2/5] Voice Engine"
@@ -54,6 +48,7 @@ echo "────────────────────────�
 clone_repo "whisper.cpp"  "https://github.com/ggerganov/whisper.cpp.git"
 clone_repo "piper"        "https://github.com/rhasspy/piper.git"
 clone_repo "rhasspy3"     "https://github.com/rhasspy/rhasspy3.git"
+cd "$TOPU_DEV"
 
 echo ""
 echo "▸ [3/5] Gaming Stack"
@@ -72,11 +67,19 @@ clone_repo "wf-recorder"  "https://github.com/ammen99/wf-recorder.git"
 echo ""
 echo "▸ [5/5] Installing Build Dependencies (APT)"
 echo "─────────────────────────────────────────"
+
+# ── Add Hyprland PPA (needed for xdg-desktop-portal-hyprland) ────────
+echo "  Adding Hyprland PPA..."
+sudo add-apt-repository -y ppa:hyprwm/hyprland 2>/dev/null || \
+  warn "Hyprland PPA unavailable — portal will be built from source"
+
 sudo apt update -qq
+
+# ── Core build tools ──────────────────────────────────────────────────
 sudo apt install -y \
   build-essential cmake meson ninja-build pkg-config \
   git curl wget python3 python3-pip python3-venv \
-  rustup cargo golang \
+  cargo golang \
   libwayland-dev wayland-protocols \
   libxkbcommon-dev libpixman-1-dev \
   libinput-dev libudev-dev libseat-dev \
@@ -84,42 +87,60 @@ sudo apt install -y \
   libvulkan-dev vulkan-tools mesa-vulkan-drivers \
   libpipewire-0.3-dev pipewire wireplumber \
   libportaudio2 portaudio19-dev \
-  ffmpeg libavcodec-dev libavformat-dev \
-  swaylock swayidle mako waybar foot \
+  ffmpeg libavcodec-dev libavformat-dev
+
+# ── Wayland shell packages (correct Ubuntu/Pop!_OS package names) ─────
+# Note: 'mako' = mako-notifier | 'foot' = build from source (not in apt)
+#       'xdg-desktop-portal-hyprland' requires Hyprland PPA
+sudo apt install -y \
+  swaylock swayidle mako-notifier waybar \
   grim slurp wl-clipboard wf-recorder \
-  xdg-desktop-portal-hyprland \
-  gamemode mangohud flatpak
+  gamemode mangohud flatpak || \
+  warn "Some optional packages unavailable — check apt errors above"
+
+# xdg-desktop-portal-hyprland — try from PPA, skip if unavailable
+sudo apt install -y xdg-desktop-portal-hyprland 2>/dev/null || \
+  warn "xdg-desktop-portal-hyprland not found — will build from source"
+
+# Install rustup if cargo not already present
+if ! command -v rustup &>/dev/null; then
+  echo "  Installing Rust toolchain..."
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
+  source "$HOME/.cargo/env"
+fi
 
 echo ""
 echo "▸ Installing Porcupine (Wake Word)"
 echo "─────────────────────────────────────────"
-pip3 install pvporcupine pvrecorder
+pip3 install --break-system-packages pvporcupine pvrecorder 2>/dev/null || \
+  pip3 install pvporcupine pvrecorder || \
+  warn "Porcupine install failed — add API key later"
 
 echo ""
 echo "▸ Building whisper.cpp"
 echo "─────────────────────────────────────────"
-cd "$NEXOS_DEV/whisper.cpp"
+cd "$TOPU_DEV/whisper.cpp"
 make -j$(nproc)
 echo "  Downloading Whisper 'small.en' model for dev (fast)..."
 bash ./models/download-ggml-model.sh small.en
-cd "$NEXOS_DEV"
+cd "$TOPU_DEV"
 
 echo ""
 echo "▸ Installing Rhasspy 3 Python deps"
 echo "─────────────────────────────────────────"
-cd "$NEXOS_DEV/rhasspy3"
+cd "$TOPU_DEV/rhasspy3"
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 deactivate
-cd "$NEXOS_DEV"
+cd "$TOPU_DEV"
 
 echo ""
 echo "▸ Installing Piper TTS"
 echo "─────────────────────────────────────────"
-cd "$NEXOS_DEV/piper"
-pip3 install -e .
-cd "$NEXOS_DEV"
+cd "$TOPU_DEV/piper"
+pip3 install --break-system-packages -e . 2>/dev/null || pip3 install -e .
+cd "$TOPU_DEV"
 
 echo ""
 echo "▸ Installing yazi (Rust TUI file manager)"
@@ -128,18 +149,18 @@ cargo install yazi-fm yazi-cli
 
 echo ""
 echo "╔══════════════════════════════════════════════════════╗"
-echo "║  ✅  All NexOS dependencies cloned & built!          ║"
+echo "║  ✅  TOPU OS dependencies cloned & built!            ║"
 echo "║                                                      ║"
-echo "║  Repos at: ~/nexos-dev/                             ║"
+echo "║  Repos at: ~/topu-dev/                              ║"
 echo "║                                                      ║"
 echo "║  NEXT STEPS:                                         ║"
 echo "║  1. Get Picovoice API key: console.picovoice.ai      ║"
-echo "║     → Train 'Hey Nex' wake word model                ║"
-echo "║  2. Build Hyprland: cd ~/nexos-dev/Hyprland          ║"
+echo "║     → Train 'Hey TOPU' wake word model               ║"
+echo "║  2. Build Hyprland: cd ~/topu-dev/Hyprland           ║"
 echo "║     → make all && sudo make install                  ║"
 echo "║  3. Download Piper voice model (en_US-ryan):         ║"
 echo "║     https://github.com/rhasspy/piper/releases        ║"
-echo "║  4. On VM only: install Xanmod-RT kernel             ║"
-echo "║     (see nexos_dev_setup_guide.md for command)       ║"
+echo "║  4. Build TOPU ISO: cd ~/TOPU                        ║"
+echo "║     sudo bash build/build.sh                         ║"
 echo "╚══════════════════════════════════════════════════════╝"
 echo ""
