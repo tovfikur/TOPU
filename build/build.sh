@@ -37,19 +37,18 @@ echo -e "${BOLD}║           TOPU OS — ISO Build System  v${ISO_VERSION}     
 echo -e "${BOLD}╚══════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
+# ── Install build tools (self-contained — no pre-install needed) ──────
+log "Installing ISO build tools..."
+apt-get update -qq
+apt-get install -y \
+  debootstrap squashfs-tools xorriso \
+  grub-pc-bin grub-efi-amd64-bin \
+  mtools dosfstools isolinux syslinux-common \
+  live-build git curl wget python3 build-essential cmake &>/dev/null
+ok "Build tools ready"
+
 # ── Checks ───────────────────────────────────────────────────────────
 [[ $EUID -ne 0 ]] && fail "This script must be run as root (sudo bash build.sh)"
-command -v debootstrap &>/dev/null || fail "debootstrap not found. Run: apt install debootstrap"
-command -v xorriso     &>/dev/null || fail "xorriso not found. Run: apt install xorriso"
-command -v mksquashfs  &>/dev/null || fail "squashfs-tools not found. Run: apt install squashfs-tools"
-
-# ── Install build tools ───────────────────────────────────────────────
-log "Installing ISO build dependencies..."
-apt-get install -y \
-  debootstrap squashfs-tools xorriso grub-pc-bin grub-efi-amd64-bin \
-  mtools dosfstools isolinux syslinux-common live-build \
-  git curl wget python3 build-essential cmake &>/dev/null
-ok "Build tools ready"
 
 # ── Clean dirs ────────────────────────────────────────────────────────
 log "Preparing build directories..."
