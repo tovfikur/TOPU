@@ -136,8 +136,53 @@ cp "$KERNEL" "$STAGING_DIR/live/vmlinuz"
 cp "$INITRD" "$STAGING_DIR/live/initrd"
 ok "Kernel: $(basename $KERNEL)"
 
-# ── Step 7: Set up GRUB (BIOS + UEFI) ────────────────────────────────
-log "Configuring GRUB bootloader..."
+# ── Step 7: Set up bootloader (ISOLINUX for BIOS, GRUB for UEFI) ──────
+log "Configuring bootloader (ISOLINUX + GRUB-EFI)..."
+
+# ── BIOS boot: ISOLINUX (no size limit issues unlike grub-mkstandalone) ─
+ISOLINUX_BIN=""
+for path in \
+  /usr/lib/ISOLINUX/isolinux.bin \
+  /usr/lib/syslinux/isolinux.bin \
+  /usr/share/syslinux/isolinux.bin; do
+  [ -f "$path" ] && ISOLINUX_BIN="$path" && break
+done
+
+if [ -n "$ISOLINUX_BIN" ]; then
+  cp "$ISOLINUX_BIN" "$STAGING_DIR/isolinux/"
+  # Copy required syslinux modules
+  for mod_dir in \
+    /usr/lib/syslinux/modules/bios \
+    /usr/lib/syslinux/bios \
+    /usr/share/syslinux; do
+    [ -d "$mod_dir" ] && cp "$mod_dir"/*.c32 "$STAGING_DIR/isolinux/" 2>/dev/null || true
+  done
+
+  cat > "$STAGING_DIR/isolinux/isolinux.cfg" <<'ISOLINUX_EOF'
+UI menu.c32
+PROMPT 0
+TIMEOUT 50
+MENU TITLE TOPU OS
+
+LABEL install
+  MENU LABEL ^Install TOPU OS
+  KERNEL /live/vmlinuz
+  APPEND initrd=/live/initrd boot=live quiet splash
+
+LABEL live
+  MENU LABEL ^Try TOPU OS (Live)
+  KERNEL /live/vmlinuz
+  APPEND initrd=/live/initrd boot=live nomodeset
+
+LABEL safe
+  MENU LABEL TOPU OS ^Safe Mode
+  KERNEL /live/vmlinuz
+  APPEND initrd=/live/initrd boot=live nomodeset noapic
+ISOLINUX_EOF
+  ok "ISOLINUX (BIOS) configured"
+else
+  warn "isolinux.bin not found — BIOS boot will be skipped (UEFI only)"
+fi
 
 # Copy TOPU GRUB theme into staging
 if [ -d "$PROJECT_ROOT/branding/grub-theme" ]; then
@@ -145,6 +190,7 @@ if [ -d "$PROJECT_ROOT/branding/grub-theme" ]; then
   cp -r "$PROJECT_ROOT/branding/grub-theme" "$STAGING_DIR/boot/grub/themes/topu"
 fi
 
+# GRUB config (used by UEFI boot)
 cat > "$STAGING_DIR/boot/grub/grub.cfg" <<'GRUBEOF'
 set default=0
 set timeout=5
@@ -169,19 +215,7 @@ menuentry "TOPU OS — Safe Mode" --class topu {
 }
 GRUBEOF
 
-# Build BIOS bootable GRUB image with minimal embedded modules
-# (full module set loaded from ISO at runtime — avoids 0x78000 size limit)
-grub-mkstandalone \
-  --format=i386-pc \
-  --output="$STAGING_DIR/isolinux/core.img" \
-  --install-modules="normal linux" \
-  --modules="normal linux" \
-  "boot/grub/grub.cfg=$STAGING_DIR/boot/grub/grub.cfg"
-
-cat /usr/lib/grub/i386-pc/cdboot.img "$STAGING_DIR/isolinux/core.img" \
-  > "$STAGING_DIR/isolinux/bios.img"
-
-# Build UEFI boot image
+# ── UEFI boot: GRUB EFI ────────────────────────────────────────────────
 grub-mkstandalone \
   --format=x86_64-efi \
   --output="$STAGING_DIR/EFI/BOOT/bootx64.efi" \
@@ -195,7 +229,8 @@ grub-mkstandalone \
   mmd -i efiboot.img EFI BOOT && \
   mcopy -i efiboot.img EFI/BOOT/bootx64.efi ::EFI/BOOT/
 )
-ok "GRUB configured (BIOS + UEFI)"
+ok "GRUB EFI (UEFI) configured"
+
 
 
 # ── Step 8: Master the ISO ─────────────────────────────────────────────
@@ -206,12 +241,10 @@ xorriso \
   -full-iso9660-filenames \
   -volid "$ISO_LABEL" \
   -graft-points \
-  -eltorito-boot isolinux/bios.img \
+  -eltorito-boot isolinux/isolinux.bin \
     -no-emul-boot \
     -boot-load-size 4 \
     -boot-info-table \
-    --grub2-boot-info \
-    --grub2-mbr /usr/lib/grub/i386-pc/boot_hybrid.img \
   -eltorito-alt-boot \
     -e --interval:appended_partition_2:all:: \
     -no-emul-boot \
