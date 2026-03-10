@@ -139,7 +139,7 @@ ok "Kernel: $(basename $KERNEL)"
 # ── Step 7: Set up GRUB (BIOS + UEFI) ────────────────────────────────
 log "Configuring GRUB bootloader..."
 
-# Copy TOPU GRUB theme
+# Copy TOPU GRUB theme into staging
 if [ -d "$PROJECT_ROOT/branding/grub-theme" ]; then
   mkdir -p "$STAGING_DIR/boot/grub/themes"
   cp -r "$PROJECT_ROOT/branding/grub-theme" "$STAGING_DIR/boot/grub/themes/topu"
@@ -169,18 +169,19 @@ menuentry "TOPU OS — Safe Mode" --class topu {
 }
 GRUBEOF
 
-# BIOS boot image
+# Build BIOS bootable GRUB image with minimal embedded modules
+# (full module set loaded from ISO at runtime — avoids 0x78000 size limit)
 grub-mkstandalone \
   --format=i386-pc \
   --output="$STAGING_DIR/isolinux/core.img" \
-  --install-modules="linux16 linux normal iso9660 biosdisk memdisk search tar ls" \
-  --modules="linux16 linux normal iso9660 biosdisk search" \
+  --install-modules="normal linux" \
+  --modules="normal linux" \
   "boot/grub/grub.cfg=$STAGING_DIR/boot/grub/grub.cfg"
 
 cat /usr/lib/grub/i386-pc/cdboot.img "$STAGING_DIR/isolinux/core.img" \
   > "$STAGING_DIR/isolinux/bios.img"
 
-# UEFI boot image
+# Build UEFI boot image
 grub-mkstandalone \
   --format=x86_64-efi \
   --output="$STAGING_DIR/EFI/BOOT/bootx64.efi" \
@@ -189,12 +190,13 @@ grub-mkstandalone \
 
 # Create EFI FAT image
 (cd "$STAGING_DIR" && \
-  dd if=/dev/zero of=efiboot.img bs=1M count=10 && \
+  dd if=/dev/zero of=efiboot.img bs=1M count=10 2>/dev/null && \
   mkfs.vfat efiboot.img && \
   mmd -i efiboot.img EFI BOOT && \
   mcopy -i efiboot.img EFI/BOOT/bootx64.efi ::EFI/BOOT/
 )
 ok "GRUB configured (BIOS + UEFI)"
+
 
 # ── Step 8: Master the ISO ─────────────────────────────────────────────
 log "Mastering TOPU.iso..."
