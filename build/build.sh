@@ -121,7 +121,7 @@ ok "Chroot cleaned"
 # ── Step 5: Create squashfs ────────────────────────────────────────────
 log "Compressing rootfs to squashfs (this takes ~10-20 min)..."
 mksquashfs "$CHROOT_DIR" "$STAGING_DIR/live/filesystem.squashfs" \
-  -comp xz -Xbcj x86 -b 1M -no-progress
+  -comp gzip -b 1M -no-progress
 ok "Squashfs created ($(du -sh "$STAGING_DIR/live/filesystem.squashfs" | cut -f1))"
 
 # Print filesystem size
