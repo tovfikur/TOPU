@@ -219,7 +219,7 @@ GRUBEOF
 grub-mkstandalone \
   --format=x86_64-efi \
   --output="$STAGING_DIR/EFI/BOOT/bootx64.efi" \
-  --install-modules="linux linux16 linuxefi normal iso9660 search fat" \
+  --install-modules="linux normal iso9660 search fat" \
   "boot/grub/grub.cfg=$STAGING_DIR/boot/grub/grub.cfg"
 
 # Create EFI FAT image
