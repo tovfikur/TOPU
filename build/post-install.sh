@@ -76,8 +76,26 @@ apt-get update -q --fix-missing 2>/dev/null || true
 apt-get install -y linux-xanmod-rt-x64v3 2>/dev/null || \
   warn "Xanmod RT not available — using generic kernel"
 
-# Regenerate initrd so live-boot hooks are baked in for whichever kernel is active
-log "Regenerating initramfs with live-boot hooks..."
+# ── Ensure live-boot critical modules are in initrd ───────────────────
+log "Adding overlay/loop/squashfs modules to initramfs..."
+mkdir -p /etc/initramfs-tools/modules.d
+# These MUST be in the initrd for live boot to work
+cat >> /etc/initramfs-tools/modules <<'MODULES_EOF'
+overlay
+loop
+squashfs
+MODULES_EOF
+
+# Also pre-load them at boot via modules-load.d
+mkdir -p /etc/modules-load.d
+cat > /etc/modules-load.d/topu-live.conf <<'MODLOAD_EOF'
+overlay
+loop
+squashfs
+MODLOAD_EOF
+
+# Regenerate initrd so live-boot hooks + overlay module are baked in
+log "Regenerating initramfs with live-boot hooks + overlay module..."
 update-initramfs -u -k all 2>/dev/null || update-initramfs -u 2>/dev/null || true
 ok "Kernel + initrd ready"
 
