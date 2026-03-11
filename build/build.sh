@@ -159,25 +159,27 @@ if [ -n "$ISOLINUX_BIN" ]; then
   done
 
   cat > "$STAGING_DIR/isolinux/isolinux.cfg" <<'ISOLINUX_EOF'
-UI menu.c32
+DEFAULT live
 PROMPT 0
 TIMEOUT 50
-MENU TITLE TOPU OS
 
 LABEL install
-  MENU LABEL ^Install TOPU OS
+  MENU LABEL Install TOPU OS
   KERNEL /live/vmlinuz
-  APPEND initrd=/live/initrd boot=live quiet splash
+  APPEND initrd=/live/initrd boot=live components quiet splash \
+    live-media-path=/live ignore_uuid union=overlay
 
 LABEL live
-  MENU LABEL ^Try TOPU OS (Live)
+  MENU LABEL Try TOPU OS (Live)
   KERNEL /live/vmlinuz
-  APPEND initrd=/live/initrd boot=live nomodeset
+  APPEND initrd=/live/initrd boot=live components nomodeset \
+    live-media-path=/live ignore_uuid union=overlay
 
 LABEL safe
-  MENU LABEL TOPU OS ^Safe Mode
+  MENU LABEL TOPU OS Safe Mode
   KERNEL /live/vmlinuz
-  APPEND initrd=/live/initrd boot=live nomodeset noapic
+  APPEND initrd=/live/initrd boot=live components nomodeset noapic \
+    live-media-path=/live ignore_uuid union=overlay
 ISOLINUX_EOF
   ok "ISOLINUX (BIOS) configured"
 else
