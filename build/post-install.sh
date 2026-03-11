@@ -38,7 +38,12 @@ locale-gen en_US.UTF-8
 update-locale LANG=en_US.UTF-8
 export LANG=en_US.UTF-8
 
-# ── Core system packages ───────────────────────────────────────────────
+# ── Install live-boot FIRST (must be in initrd hooks before kernel is installed) ──
+log "Installing live-boot hooks (required before kernel install)..."
+apt-get install -y --no-install-recommends --fix-missing \
+  live-boot live-config live-boot-initramfs-tools
+
+# ── Core system packages ───────────────────────────────────────────────────
 log "Installing core system packages..."
 apt-get install -y --no-install-recommends --fix-missing \
   linux-image-generic linux-headers-generic \
@@ -54,7 +59,6 @@ apt-get install -y --no-install-recommends --fix-missing \
   git build-essential cmake meson ninja-build pkg-config \
   python3 python3-pip python3-venv \
   xdg-user-dirs xdg-utils \
-  live-boot live-config \
   unzip wget curl
 
 # ── Calamares installer ────────────────────────────────────────────────
@@ -71,7 +75,11 @@ echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.
 apt-get update -q --fix-missing 2>/dev/null || true
 apt-get install -y linux-xanmod-rt-x64v3 2>/dev/null || \
   warn "Xanmod RT not available — using generic kernel"
-ok "Kernel installed"
+
+# Regenerate initrd so live-boot hooks are baked in for whichever kernel is active
+log "Regenerating initramfs with live-boot hooks..."
+update-initramfs -u -k all 2>/dev/null || update-initramfs -u 2>/dev/null || true
+ok "Kernel + initrd ready"
 
 # ── Hyprland PPA + Wayland stack ─────────────────────────────────────
 log "Adding Hyprland PPA..."
