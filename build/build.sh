@@ -226,8 +226,9 @@ grub-mkstandalone \
 (cd "$STAGING_DIR" && \
   dd if=/dev/zero of=efiboot.img bs=1M count=10 2>/dev/null && \
   mkfs.vfat efiboot.img && \
-  mmd -i efiboot.img EFI BOOT && \
-  mcopy -i efiboot.img EFI/BOOT/bootx64.efi ::EFI/BOOT/
+  mmd -i efiboot.img ::/EFI && \
+  mmd -i efiboot.img ::/EFI/BOOT && \
+  mcopy -i efiboot.img EFI/BOOT/bootx64.efi ::/EFI/BOOT/bootx64.efi
 )
 ok "GRUB EFI (UEFI) configured"
 
