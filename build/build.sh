@@ -167,19 +167,19 @@ LABEL install
   MENU LABEL Install TOPU OS
   KERNEL /live/vmlinuz
   APPEND initrd=/live/initrd boot=live components quiet splash \
-    live-media-path=/live ignore_uuid union=overlay
+    live-media-path=/live ignore_uuid union=overlay loop.max_loop=64
 
 LABEL live
   MENU LABEL Try TOPU OS (Live)
   KERNEL /live/vmlinuz
   APPEND initrd=/live/initrd boot=live components nomodeset \
-    live-media-path=/live ignore_uuid union=overlay
+    live-media-path=/live ignore_uuid union=overlay loop.max_loop=64
 
 LABEL safe
   MENU LABEL TOPU OS Safe Mode
   KERNEL /live/vmlinuz
   APPEND initrd=/live/initrd boot=live components nomodeset noapic \
-    live-media-path=/live ignore_uuid union=overlay
+    live-media-path=/live ignore_uuid union=overlay loop.max_loop=64
 ISOLINUX_EOF
   ok "ISOLINUX (BIOS) configured"
 else
@@ -202,17 +202,17 @@ if [ -d /boot/grub/themes/topu ]; then
 fi
 
 menuentry "Install TOPU OS" --class topu {
-  linux  /live/vmlinuz boot=live quiet splash
+  linux  /live/vmlinuz boot=live components quiet splash live-media-path=/live ignore_uuid loop.max_loop=64
   initrd /live/initrd
 }
 
 menuentry "Try TOPU OS (Live)" --class topu {
-  linux  /live/vmlinuz boot=live nomodeset
+  linux  /live/vmlinuz boot=live components nomodeset live-media-path=/live ignore_uuid loop.max_loop=64
   initrd /live/initrd
 }
 
 menuentry "TOPU OS — Safe Mode" --class topu {
-  linux  /live/vmlinuz boot=live nomodeset noapic
+  linux  /live/vmlinuz boot=live components nomodeset noapic live-media-path=/live ignore_uuid loop.max_loop=64
   initrd /live/initrd
 }
 GRUBEOF
